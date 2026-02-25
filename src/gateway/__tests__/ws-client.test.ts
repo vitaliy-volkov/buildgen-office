@@ -9,18 +9,34 @@ class MockWebSocket {
 
   static instances: MockWebSocket[] = [];
   readyState: number = MockWebSocket.CONNECTING;
-  onopen: (() => void) | null = null;
-  onmessage: ((e: MessageEvent) => void) | null = null;
-  onclose: (() => void) | null = null;
-  onerror: (() => void) | null = null;
   sent: string[] = [];
+  private listeners = new Map<string, Set<(...args: unknown[]) => void>>();
 
   constructor(_url: string) {
     MockWebSocket.instances.push(this);
     setTimeout(() => {
       this.readyState = MockWebSocket.OPEN;
-      this.onopen?.();
+      this.emit("open");
     }, 0);
+  }
+
+  addEventListener(type: string, fn: (...args: unknown[]) => void) {
+    let set = this.listeners.get(type);
+    if (!set) {
+      set = new Set();
+      this.listeners.set(type, set);
+    }
+    set.add(fn);
+  }
+
+  removeEventListener(type: string, fn: (...args: unknown[]) => void) {
+    this.listeners.get(type)?.delete(fn);
+  }
+
+  private emit(type: string, ...args: unknown[]) {
+    for (const fn of this.listeners.get(type) ?? []) {
+      fn(...args);
+    }
   }
 
   send(data: string) {
@@ -32,12 +48,12 @@ class MockWebSocket {
   }
 
   simulateMessage(data: unknown) {
-    this.onmessage?.(new MessageEvent("message", { data: JSON.stringify(data) }));
+    this.emit("message", new MessageEvent("message", { data: JSON.stringify(data) }));
   }
 
   simulateClose() {
     this.readyState = MockWebSocket.CLOSED;
-    this.onclose?.();
+    this.emit("close");
   }
 
   static reset() {
@@ -103,7 +119,12 @@ describe("GatewayWsClient", () => {
       type: "res",
       id: "any",
       ok: true,
-      payload: { type: "hello-ok", protocol: 3, server: { name: "gw", version: "1" }, features: [] },
+      payload: {
+        type: "hello-ok",
+        protocol: 3,
+        server: { name: "gw", version: "1" },
+        features: [],
+      },
     });
 
     expect(client.getStatus()).toBe("connected");

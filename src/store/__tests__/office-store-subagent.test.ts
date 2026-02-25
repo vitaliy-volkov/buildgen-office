@@ -1,6 +1,6 @@
 import { describe, it, expect, beforeEach } from "vitest";
-import { useOfficeStore } from "@/store/office-store";
 import type { SubAgentInfo } from "@/gateway/types";
+import { useOfficeStore } from "@/store/office-store";
 
 function resetStore() {
   useOfficeStore.setState({

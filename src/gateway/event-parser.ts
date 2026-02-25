@@ -1,9 +1,4 @@
-import type {
-  AgentEventPayload,
-  AgentVisualStatus,
-  SpeechBubble,
-  ToolInfo,
-} from "./types";
+import type { AgentEventPayload, AgentVisualStatus, SpeechBubble, ToolInfo } from "./types";
 
 export interface ParsedAgentEvent {
   runId: string;
@@ -47,10 +42,7 @@ export function parseAgentEvent(event: AgentEventPayload): ParsedAgentEvent {
   }
 }
 
-function parseLifecycle(
-  result: ParsedAgentEvent,
-  event: AgentEventPayload,
-): ParsedAgentEvent {
+function parseLifecycle(result: ParsedAgentEvent, event: AgentEventPayload): ParsedAgentEvent {
   const phase = event.data.phase as string | undefined;
 
   switch (phase) {
@@ -77,10 +69,7 @@ function parseLifecycle(
   return result;
 }
 
-function parseTool(
-  result: ParsedAgentEvent,
-  event: AgentEventPayload,
-): ParsedAgentEvent {
+function parseTool(result: ParsedAgentEvent, event: AgentEventPayload): ParsedAgentEvent {
   const phase = event.data.phase as string | undefined;
   const name = (event.data.name as string) ?? "unknown";
 
@@ -103,10 +92,7 @@ function parseTool(
   return result;
 }
 
-function parseAssistant(
-  result: ParsedAgentEvent,
-  event: AgentEventPayload,
-): ParsedAgentEvent {
+function parseAssistant(result: ParsedAgentEvent, event: AgentEventPayload): ParsedAgentEvent {
   const text = (event.data.text as string) ?? "";
   result.status = "speaking";
   result.speechBubble = { text, timestamp: event.ts };
@@ -114,10 +100,7 @@ function parseAssistant(
   return result;
 }
 
-function parseError(
-  result: ParsedAgentEvent,
-  event: AgentEventPayload,
-): ParsedAgentEvent {
+function parseError(result: ParsedAgentEvent, event: AgentEventPayload): ParsedAgentEvent {
   const message = (event.data.message as string) ?? "未知错误";
   result.status = "error";
   result.summary = `错误: ${message}`;

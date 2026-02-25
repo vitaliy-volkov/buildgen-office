@@ -60,9 +60,7 @@ function WallWithWindows({
     return wins;
   }, [start, dx, dz, windowCount, windowY]);
 
-  const thickDir: [number, number, number] = isXAxis
-    ? [0, 0, wallThick]
-    : [wallThick, 0, 0];
+  const thickDir: [number, number, number] = isXAxis ? [0, 0, wallThick] : [wallThick, 0, 0];
 
   return (
     <group>
@@ -91,11 +89,7 @@ function WallWithWindows({
       {windows.map((w, i) => (
         <mesh
           key={`win-${side}-${i}`}
-          position={[
-            w.pos[0] + thickDir[0] * 0.5,
-            w.pos[1],
-            w.pos[2] + thickDir[2] * 0.5,
-          ]}
+          position={[w.pos[0] + thickDir[0] * 0.5, w.pos[1], w.pos[2] + thickDir[2] * 0.5]}
           rotation={[0, rotY, 0]}
         >
           <planeGeometry args={[windowWidth, windowHeight]} />
@@ -160,11 +154,7 @@ function ServerRack({ position }: { position: [number, number, number] }) {
       {[0.3, 0.6, 0.9, 1.2, 1.5].map((y) => (
         <mesh key={`led-${y}`} position={[0.26, y, 0]}>
           <sphereGeometry args={[0.02, 8, 8]} />
-          <meshStandardMaterial
-            color="#22c55e"
-            emissive="#22c55e"
-            emissiveIntensity={2}
-          />
+          <meshStandardMaterial color="#22c55e" emissive="#22c55e" emissiveIntensity={2} />
         </mesh>
       ))}
     </group>
@@ -189,19 +179,11 @@ export function Environment3D() {
         shadow-bias={-0.001}
         color="#fff8ee"
       />
-      <directionalLight
-        position={[-8, 10, -5]}
-        intensity={0.4}
-        color="#dde4f0"
-      />
+      <directionalLight position={[-8, 10, -5]} intensity={0.4} color="#dde4f0" />
       <hemisphereLight args={["#e0e8f5", "#b0a090", 0.4]} />
 
       {/* === Ground / Base Platform === */}
-      <mesh
-        rotation={[-Math.PI / 2, 0, 0]}
-        position={[8, -0.08, 6]}
-        receiveShadow
-      >
+      <mesh rotation={[-Math.PI / 2, 0, 0]} position={[8, -0.08, 6]} receiveShadow>
         <planeGeometry args={[22, 18]} />
         <meshStandardMaterial color="#bcc4d0" roughness={0.95} />
       </mesh>
@@ -213,45 +195,22 @@ export function Environment3D() {
       </mesh>
 
       {/* Main floor */}
-      <mesh
-        rotation={[-Math.PI / 2, 0, 0]}
-        position={[8, 0.01, 6]}
-        receiveShadow
-      >
+      <mesh rotation={[-Math.PI / 2, 0, 0]} position={[8, 0.01, 6]} receiveShadow>
         <planeGeometry args={[16, 12]} />
         <meshStandardMaterial color={FLOOR_COLOR} roughness={0.7} metalness={0.02} />
       </mesh>
 
       {/* Floor grid lines (very subtle) */}
-      <gridHelper
-        args={[16, 16, "#c0c8d4", "#cad2dc"]}
-        position={[8, 0.02, 6]}
-      />
+      <gridHelper args={[16, 16, "#c0c8d4", "#cad2dc"]} position={[8, 0.02, 6]} />
 
       {/* === Walls === */}
       {/* Back wall (north) */}
-      <WallWithWindows
-        start={[0, 0, 0]}
-        end={[16, 0, 0]}
-        windowCount={4}
-        side="back"
-      />
+      <WallWithWindows start={[0, 0, 0]} end={[16, 0, 0]} windowCount={4} side="back" />
       {/* Left wall (west) */}
-      <WallWithWindows
-        start={[0, 0, 0]}
-        end={[0, 0, 12]}
-        windowCount={3}
-        side="left"
-      />
+      <WallWithWindows start={[0, 0, 0]} end={[0, 0, 12]} windowCount={3} side="left" />
       {/* Right wall (east) — partial, open section in middle */}
-      <Wall
-        position={[16, WALL_HEIGHT / 2, 2]}
-        size={[WALL_THICKNESS, WALL_HEIGHT, 4]}
-      />
-      <Wall
-        position={[16, WALL_HEIGHT / 2, 10]}
-        size={[WALL_THICKNESS, WALL_HEIGHT, 4]}
-      />
+      <Wall position={[16, WALL_HEIGHT / 2, 2]} size={[WALL_THICKNESS, WALL_HEIGHT, 4]} />
+      <Wall position={[16, WALL_HEIGHT / 2, 10]} size={[WALL_THICKNESS, WALL_HEIGHT, 4]} />
       {/* Right wall windows */}
       {[2, 10].map((z) => (
         <mesh key={`rwin-${z}`} position={[16.07, 1.3, z]} rotation={[0, Math.PI / 2, 0]}>
@@ -269,10 +228,7 @@ export function Environment3D() {
 
       {/* === Interior Dividers (glass-like, lower) === */}
       {/* Divider between desk zone and meeting zone */}
-      <Wall
-        position={[8, WALL_HEIGHT * 0.35, 3]}
-        size={[WALL_THICKNESS, WALL_HEIGHT * 0.7, 5.5]}
-      />
+      <Wall position={[8, WALL_HEIGHT * 0.35, 3]} size={[WALL_THICKNESS, WALL_HEIGHT * 0.7, 5.5]} />
       {/* Top accent stripe on divider */}
       <mesh position={[8, WALL_HEIGHT * 0.7, 3]}>
         <boxGeometry args={[0.04, 0.03, 5.5]} />
@@ -286,10 +242,7 @@ export function Environment3D() {
       />
 
       {/* Horizontal divider separating top/bottom zones */}
-      <Wall
-        position={[4, WALL_HEIGHT * 0.3, 6]}
-        size={[7.5, WALL_HEIGHT * 0.6, WALL_THICKNESS]}
-      />
+      <Wall position={[4, WALL_HEIGHT * 0.3, 6]} size={[7.5, WALL_HEIGHT * 0.6, WALL_THICKNESS]} />
 
       {/* === Stairs === */}
       <Stairs position={[15, 0, 5.5]} rotation={Math.PI} steps={5} />
@@ -297,19 +250,6 @@ export function Environment3D() {
       {/* === Server Racks === */}
       <ServerRack position={[15.2, 0, 1]} />
       <ServerRack position={[15.2, 0, 1.7]} />
-
-      {/* === Ceiling beams === */}
-      {[
-        { pos: [8, WALL_HEIGHT, 3] as [number, number, number], size: [16, 0.06, 0.12] as [number, number, number] },
-        { pos: [8, WALL_HEIGHT, 9] as [number, number, number], size: [16, 0.06, 0.12] as [number, number, number] },
-        { pos: [4, WALL_HEIGHT, 6] as [number, number, number], size: [0.12, 0.06, 12] as [number, number, number] },
-        { pos: [12, WALL_HEIGHT, 6] as [number, number, number], size: [0.12, 0.06, 12] as [number, number, number] },
-      ].map((beam, i) => (
-        <mesh key={`beam-${i}`} position={beam.pos}>
-          <boxGeometry args={beam.size} />
-          <meshStandardMaterial color="#b0b8c4" roughness={0.6} />
-        </mesh>
-      ))}
     </group>
   );
 }

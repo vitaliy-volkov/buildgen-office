@@ -1,7 +1,7 @@
 import { useEffect, useRef, useState } from "react";
 import Markdown from "react-markdown";
-import { SVG_WIDTH, SVG_HEIGHT } from "@/lib/constants";
 import type { VisualAgent } from "@/gateway/types";
+import { SVG_WIDTH, SVG_HEIGHT } from "@/lib/constants";
 
 interface SpeechBubbleOverlayProps {
   agent: VisualAgent;
@@ -19,7 +19,9 @@ export function SpeechBubbleOverlay({ agent }: SpeechBubbleOverlayProps) {
     setVisible(true);
   }, [agent.status]);
 
-  if (!agent.speechBubble || !visible) return null;
+  if (!agent.speechBubble || !visible) {
+    return null;
+  }
 
   const leftPct = (agent.position.x / SVG_WIDTH) * 100;
   const topPct = (agent.position.y / SVG_HEIGHT) * 100;
@@ -56,18 +58,9 @@ export function SpeechBubbleOverlay({ agent }: SpeechBubbleOverlayProps) {
       <div
         className="h-0 w-0 border-l-[6px] border-r-[6px] border-t-[8px] border-l-transparent border-r-transparent border-t-gray-200"
         style={{
-          marginLeft:
-            arrowAlign === "left"
-              ? "16px"
-              : arrowAlign === "right"
-                ? "auto"
-                : "auto",
+          marginLeft: arrowAlign === "left" ? "16px" : arrowAlign === "right" ? "auto" : "auto",
           marginRight:
-            arrowAlign === "right"
-              ? "16px"
-              : arrowAlign === "center"
-                ? "auto"
-                : undefined,
+            arrowAlign === "right" ? "16px" : arrowAlign === "center" ? "auto" : undefined,
           ...(arrowAlign === "center" ? { margin: "0 auto" } : {}),
         }}
       />

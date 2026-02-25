@@ -1,12 +1,9 @@
+import { enableMapSet } from "immer";
 import { create } from "zustand";
 import { immer } from "zustand/middleware/immer";
-import { enableMapSet } from "immer";
 import { parseAgentEvent } from "@/gateway/event-parser";
 
 enableMapSet();
-import { applyEventToAgent } from "./agent-reducer";
-import { computeMetrics } from "./metrics-reducer";
-import { allocatePosition } from "@/lib/position-allocator";
 import type {
   AgentEventPayload,
   AgentSummary,
@@ -20,6 +17,9 @@ import type {
   ViewMode,
   VisualAgent,
 } from "@/gateway/types";
+import { allocatePosition } from "@/lib/position-allocator";
+import { applyEventToAgent } from "./agent-reducer";
+import { computeMetrics } from "./metrics-reducer";
 
 const EVENT_HISTORY_LIMIT = 200;
 const LINK_TIMEOUT_MS = 60_000;
@@ -108,7 +108,12 @@ export const useOfficeStore = create<OfficeStore>()(
         for (const a of state.agents.values()) {
           occupied.add(positionKey(a.position));
         }
-        const agent = createVisualAgent(info.agentId, info.label || `Sub-${info.agentId.slice(0, 6)}`, true, occupied);
+        const agent = createVisualAgent(
+          info.agentId,
+          info.label || `Sub-${info.agentId.slice(0, 6)}`,
+          true,
+          occupied,
+        );
         agent.parentAgentId = parentId;
         agent.zone = "hotDesk";
         agent.runId = info.sessionKey;
@@ -175,8 +180,7 @@ export const useOfficeStore = create<OfficeStore>()(
 
         const occupied = new Set<string>();
         for (const summary of summaries) {
-          const name =
-            summary.identity?.name ?? summary.name ?? summary.id;
+          const name = summary.identity?.name ?? summary.name ?? summary.id;
           const agent = createVisualAgent(summary.id, name, false, occupied);
           occupied.add(positionKey(agent.position));
           state.agents.set(summary.id, agent);
@@ -254,8 +258,7 @@ export const useOfficeStore = create<OfficeStore>()(
 
     selectAgent: (id: string | null) => {
       set((state) => {
-        state.selectedAgentId =
-          state.selectedAgentId === id ? null : id;
+        state.selectedAgentId = state.selectedAgentId === id ? null : id;
       });
     },
 
@@ -292,11 +295,15 @@ function updateCollaborationLinks(
   agentId: string,
 ): void {
   const agents = state.sessionKeyMap.get(sessionKey);
-  if (!agents || agents.length < 2) return;
+  if (!agents || agents.length < 2) {
+    return;
+  }
 
   const now = Date.now();
   for (const otherId of agents) {
-    if (otherId === agentId) continue;
+    if (otherId === agentId) {
+      continue;
+    }
 
     const existingIdx = state.links.findIndex(
       (l) =>
@@ -321,7 +328,5 @@ function updateCollaborationLinks(
   }
 
   // Decay stale links
-  state.links = state.links.filter(
-    (l) => now - l.lastActivityAt < LINK_TIMEOUT_MS,
-  );
+  state.links = state.links.filter((l) => now - l.lastActivityAt < LINK_TIMEOUT_MS);
 }

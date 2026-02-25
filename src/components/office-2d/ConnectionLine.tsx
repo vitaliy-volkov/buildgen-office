@@ -6,13 +6,7 @@ interface ConnectionLineProps {
   strength: number;
 }
 
-export function ConnectionLine({
-  x1,
-  y1,
-  x2,
-  y2,
-  strength,
-}: ConnectionLineProps) {
+export function ConnectionLine({ x1, y1, x2, y2, strength }: ConnectionLineProps) {
   return (
     <line
       x1={x1}

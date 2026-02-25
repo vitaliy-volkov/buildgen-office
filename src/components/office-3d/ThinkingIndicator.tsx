@@ -1,5 +1,5 @@
-import { useRef } from "react";
 import { useFrame } from "@react-three/fiber";
+import { useRef } from "react";
 import type { Mesh } from "three";
 
 export function ThinkingIndicator() {

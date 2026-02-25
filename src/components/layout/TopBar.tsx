@@ -1,12 +1,9 @@
 import { useMemo } from "react";
-import { useOfficeStore } from "@/store/office-store";
-import { isWebGLAvailable } from "@/lib/webgl-detect";
 import type { ConnectionStatus, ViewMode } from "@/gateway/types";
+import { isWebGLAvailable } from "@/lib/webgl-detect";
+import { useOfficeStore } from "@/store/office-store";
 
-const STATUS_CONFIG: Record<
-  ConnectionStatus,
-  { color: string; pulse: boolean; label: string }
-> = {
+const STATUS_CONFIG: Record<ConnectionStatus, { color: string; pulse: boolean; label: string }> = {
   connecting: { color: "#eab308", pulse: true, label: "连接中..." },
   connected: { color: "#22c55e", pulse: false, label: "已连接" },
   reconnecting: { color: "#f97316", pulse: true, label: "重连中" },
@@ -27,12 +24,8 @@ export function TopBar() {
   return (
     <header className="flex h-12 shrink-0 items-center border-b border-gray-200 bg-white px-4 shadow-sm">
       <div className="flex items-center gap-3">
-        <h1 className="text-lg font-semibold tracking-tight text-gray-800">
-          OpenClaw Office
-        </h1>
-        <span className="rounded-full bg-gray-100 px-2 py-0.5 text-xs text-gray-500">
-          v0.1.0
-        </span>
+        <h1 className="text-lg font-semibold tracking-tight text-gray-800">OpenClaw Office</h1>
+        <span className="rounded-full bg-gray-100 px-2 py-0.5 text-xs text-gray-500">v0.1.0</span>
       </div>
 
       <ViewModeSwitch
@@ -49,10 +42,7 @@ export function TopBar() {
           </strong>
         </span>
         <span>
-          Tokens{" "}
-          <strong className="text-gray-800">
-            {formatTokens(metrics.totalTokens)}
-          </strong>
+          Tokens <strong className="text-gray-800">{formatTokens(metrics.totalTokens)}</strong>
         </span>
       </div>
 
@@ -61,15 +51,11 @@ export function TopBar() {
           className="h-2.5 w-2.5 rounded-full"
           style={{
             backgroundColor: statusCfg.color,
-            animation: statusCfg.pulse
-              ? "pulse 1.5s ease-in-out infinite"
-              : "none",
+            animation: statusCfg.pulse ? "pulse 1.5s ease-in-out infinite" : "none",
           }}
         />
         <span className="text-sm text-gray-500">
-          {connectionError && connectionStatus === "error"
-            ? connectionError
-            : statusCfg.label}
+          {connectionError && connectionStatus === "error" ? connectionError : statusCfg.label}
         </span>
       </div>
     </header>
@@ -118,7 +104,11 @@ function ViewModeSwitch({
 }
 
 function formatTokens(n: number): string {
-  if (n >= 1_000_000) return `${(n / 1_000_000).toFixed(1)}M`;
-  if (n >= 1_000) return `${(n / 1_000).toFixed(1)}k`;
+  if (n >= 1_000_000) {
+    return `${(n / 1_000_000).toFixed(1)}M`;
+  }
+  if (n >= 1_000) {
+    return `${(n / 1_000).toFixed(1)}k`;
+  }
   return String(n);
 }

@@ -1,6 +1,6 @@
 import { describe, it, expect } from "vitest";
-import { position2dTo3d, allocateMeetingPositions } from "@/lib/position-allocator";
 import { SCALE_X_2D_TO_3D, SCALE_Z_2D_TO_3D } from "@/lib/constants";
+import { position2dTo3d, allocateMeetingPositions } from "@/lib/position-allocator";
 
 describe("position2dTo3d", () => {
   it("maps 2D SVG coordinates to 3D world coordinates", () => {

@@ -1,5 +1,5 @@
-import { describe, it, expect, beforeEach } from "vitest";
 import { render, screen } from "@testing-library/react";
+import { describe, it, expect, beforeEach } from "vitest";
 import { MetricsPanel } from "@/components/panels/MetricsPanel";
 import { useOfficeStore } from "@/store/office-store";
 

@@ -1,6 +1,6 @@
 import { describe, it, expect, beforeEach } from "vitest";
-import { useOfficeStore } from "@/store/office-store";
 import type { AgentEventPayload } from "@/gateway/types";
+import { useOfficeStore } from "@/store/office-store";
 
 function resetStore() {
   useOfficeStore.setState({
@@ -154,6 +154,30 @@ describe("office-store", () => {
     });
   });
 
+  describe("extended fields", () => {
+    it("initializes parentAgentId / childAgentIds / zone / originalPosition", () => {
+      useOfficeStore.getState().initAgents([{ id: "a1", name: "A" }]);
+      const agent = useOfficeStore.getState().agents.get("a1")!;
+      expect(agent.parentAgentId).toBeNull();
+      expect(agent.childAgentIds).toEqual([]);
+      expect(agent.zone).toBe("desk");
+      expect(agent.originalPosition).toBeNull();
+    });
+  });
+
+  describe("viewMode", () => {
+    it("setViewMode switches to 3d", () => {
+      useOfficeStore.getState().setViewMode("3d");
+      expect(useOfficeStore.getState().viewMode).toBe("3d");
+    });
+
+    it("setViewMode switches back to 2d", () => {
+      useOfficeStore.getState().setViewMode("3d");
+      useOfficeStore.getState().setViewMode("2d");
+      expect(useOfficeStore.getState().viewMode).toBe("2d");
+    });
+  });
+
   describe("globalMetrics", () => {
     it("counts active agents correctly", () => {
       useOfficeStore.getState().initAgents([
@@ -161,13 +185,24 @@ describe("office-store", () => {
         { id: "a2", name: "B" },
         { id: "a3", name: "C" },
       ]);
-      setRunIdMap([["r1", "a1"], ["r2", "a2"]]);
+      setRunIdMap([
+        ["r1", "a1"],
+        ["r2", "a2"],
+      ]);
 
       useOfficeStore.getState().processAgentEvent({
-        runId: "r1", seq: 1, stream: "lifecycle", ts: 1, data: { phase: "start" },
+        runId: "r1",
+        seq: 1,
+        stream: "lifecycle",
+        ts: 1,
+        data: { phase: "start" },
       });
       useOfficeStore.getState().processAgentEvent({
-        runId: "r2", seq: 1, stream: "lifecycle", ts: 1, data: { phase: "start" },
+        runId: "r2",
+        seq: 1,
+        stream: "lifecycle",
+        ts: 1,
+        data: { phase: "start" },
       });
 
       expect(useOfficeStore.getState().globalMetrics.activeAgents).toBe(2);

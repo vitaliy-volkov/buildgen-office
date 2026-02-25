@@ -1,7 +1,7 @@
 import { describe, it, expect, vi, beforeEach, afterEach } from "vitest";
 import { GatewayRpcClient, RpcError } from "@/gateway/rpc-client";
-import { GatewayWsClient } from "@/gateway/ws-client";
 import type { GatewayResponseFrame } from "@/gateway/types";
+import { GatewayWsClient } from "@/gateway/ws-client";
 
 describe("GatewayRpcClient", () => {
   let wsClient: GatewayWsClient;

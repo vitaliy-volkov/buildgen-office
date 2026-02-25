@@ -1,10 +1,8 @@
 import { describe, it, expect, vi, beforeEach } from "vitest";
-import { EventThrottle } from "@/lib/event-throttle";
 import type { AgentEventPayload } from "@/gateway/types";
+import { EventThrottle } from "@/lib/event-throttle";
 
-function makeEvent(
-  overrides: Partial<AgentEventPayload> = {},
-): AgentEventPayload {
+function makeEvent(overrides: Partial<AgentEventPayload> = {}): AgentEventPayload {
   return {
     runId: "r1",
     seq: 1,
@@ -26,14 +24,10 @@ describe("EventThrottle", () => {
     const immediate = vi.fn();
     throttle.onImmediate(immediate);
 
-    throttle.push(
-      makeEvent({ stream: "lifecycle", data: { phase: "start" } }),
-    );
+    throttle.push(makeEvent({ stream: "lifecycle", data: { phase: "start" } }));
     expect(immediate).toHaveBeenCalledTimes(1);
 
-    throttle.push(
-      makeEvent({ stream: "error", data: { message: "fail" } }),
-    );
+    throttle.push(makeEvent({ stream: "error", data: { message: "fail" } }));
     expect(immediate).toHaveBeenCalledTimes(2);
   });
 

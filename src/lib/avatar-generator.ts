@@ -1,7 +1,16 @@
 const PALETTE = [
-  "#ef4444", "#f97316", "#f59e0b", "#84cc16",
-  "#22c55e", "#14b8a6", "#06b6d4", "#3b82f6",
-  "#6366f1", "#8b5cf6", "#a855f7", "#ec4899",
+  "#ef4444",
+  "#f97316",
+  "#f59e0b",
+  "#84cc16",
+  "#22c55e",
+  "#14b8a6",
+  "#06b6d4",
+  "#3b82f6",
+  "#6366f1",
+  "#8b5cf6",
+  "#a855f7",
+  "#ec4899",
 ];
 
 function hashString(str: string): number {
@@ -26,10 +35,7 @@ export interface AvatarInfo {
   initial: string;
 }
 
-export function generateAvatar(
-  agentId: string,
-  agentName?: string,
-): AvatarInfo {
+export function generateAvatar(agentId: string, agentName?: string): AvatarInfo {
   const hash = hashString(agentId);
   const backgroundColor = PALETTE[hash % PALETTE.length];
   const textColor = luminance(backgroundColor) > 0.5 ? "#000000" : "#ffffff";

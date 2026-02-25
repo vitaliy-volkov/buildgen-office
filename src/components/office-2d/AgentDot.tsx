@@ -1,7 +1,7 @@
 import { useState } from "react";
-import { useOfficeStore } from "@/store/office-store";
-import { STATUS_COLORS, STATUS_LABELS } from "@/lib/constants";
 import type { VisualAgent } from "@/gateway/types";
+import { STATUS_COLORS, STATUS_LABELS } from "@/lib/constants";
+import { useOfficeStore } from "@/store/office-store";
 
 interface AgentDotProps {
   agent: VisualAgent;
@@ -25,13 +25,7 @@ export function AgentDot({ agent }: AgentDotProps) {
       onMouseLeave={() => setHovered(false)}
     >
       {isSelected && (
-        <circle
-          r={radius + 4}
-          fill="none"
-          stroke={color}
-          strokeWidth={2}
-          opacity={0.5}
-        />
+        <circle r={radius + 4} fill="none" stroke={color} strokeWidth={2} opacity={0.5} />
       )}
 
       <circle
@@ -66,13 +60,7 @@ export function AgentDot({ agent }: AgentDotProps) {
             stroke="#d1d5db"
             strokeWidth={0.5}
           />
-          <text
-            textAnchor="middle"
-            dominantBaseline="central"
-            fill="#374151"
-            fontSize={10}
-            y={-2}
-          >
+          <text textAnchor="middle" dominantBaseline="central" fill="#374151" fontSize={10} y={-2}>
             {agent.name} · {STATUS_LABELS[agent.status]}
           </text>
         </g>

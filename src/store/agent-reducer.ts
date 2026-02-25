@@ -1,10 +1,7 @@
 import type { ParsedAgentEvent } from "@/gateway/event-parser";
 import type { VisualAgent } from "@/gateway/types";
 
-export function applyEventToAgent(
-  agent: VisualAgent,
-  parsed: ParsedAgentEvent,
-): void {
+export function applyEventToAgent(agent: VisualAgent, parsed: ParsedAgentEvent): void {
   agent.status = parsed.status;
   agent.lastActiveAt = Date.now();
 
@@ -27,10 +24,7 @@ export function applyEventToAgent(
   }
 
   if (parsed.toolRecord) {
-    agent.toolCallHistory = [
-      parsed.toolRecord,
-      ...agent.toolCallHistory.slice(0, 9),
-    ];
+    agent.toolCallHistory = [parsed.toolRecord, ...agent.toolCallHistory.slice(0, 9)];
   }
 
   if (parsed.runId && !agent.runId) {

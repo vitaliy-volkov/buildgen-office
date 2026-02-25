@@ -1,6 +1,6 @@
 import { describe, it, expect } from "vitest";
-import { diffSessions } from "@/hooks/useSubAgentPoller";
 import type { SubAgentInfo } from "@/gateway/types";
+import { diffSessions } from "@/hooks/useSubAgentPoller";
 
 function mkSub(key: string, agentId = `agent-${key}`): SubAgentInfo {
   return {

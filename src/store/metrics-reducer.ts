@@ -13,8 +13,7 @@ export function computeMetrics(
   }
 
   const totalAgents = agents.size;
-  const collaborationHeat =
-    totalAgents > 0 ? Math.min((activeCount / totalAgents) * 100, 100) : 0;
+  const collaborationHeat = totalAgents > 0 ? Math.min((activeCount / totalAgents) * 100, 100) : 0;
 
   return {
     activeAgents: activeCount,

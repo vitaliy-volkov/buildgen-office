@@ -1,11 +1,12 @@
 import { useState, useMemo } from "react";
-import { useOfficeStore } from "@/store/office-store";
-import { Avatar } from "@/components/shared/Avatar";
-import { STATUS_COLORS, STATUS_LABELS } from "@/lib/constants";
 import { AgentDetailPanel } from "@/components/panels/AgentDetailPanel";
-import { MetricsPanel } from "@/components/panels/MetricsPanel";
 import { EventTimeline } from "@/components/panels/EventTimeline";
+import { MetricsPanel } from "@/components/panels/MetricsPanel";
+import { SubAgentPanel } from "@/components/panels/SubAgentPanel";
+import { Avatar } from "@/components/shared/Avatar";
 import type { AgentVisualStatus } from "@/gateway/types";
+import { STATUS_COLORS, STATUS_LABELS } from "@/lib/constants";
+import { useOfficeStore } from "@/store/office-store";
 
 type FilterTag = "all" | "active" | "idle" | "error";
 
@@ -35,9 +36,7 @@ export function Sidebar() {
     }
 
     if (filter === "active") {
-      list = list.filter(
-        (a) => a.status !== "idle" && a.status !== "offline",
-      );
+      list = list.filter((a) => a.status !== "idle" && a.status !== "offline");
     } else if (filter === "idle") {
       list = list.filter((a) => a.status === "idle");
     } else if (filter === "error") {
@@ -112,33 +111,28 @@ export function Sidebar() {
           >
             <Avatar agentId={agent.id} agentName={agent.name} size={28} />
             <div className="min-w-0 flex-1">
-              <div className="truncate text-sm font-medium text-gray-800">
-                {agent.name}
-              </div>
+              <div className="truncate text-sm font-medium text-gray-800">{agent.name}</div>
               <div className="flex items-center gap-1.5">
                 <span
                   className="inline-block h-1.5 w-1.5 rounded-full"
                   style={{
-                    backgroundColor:
-                      STATUS_COLORS[agent.status as AgentVisualStatus],
+                    backgroundColor: STATUS_COLORS[agent.status as AgentVisualStatus],
                   }}
                 />
                 <span className="text-xs text-gray-500">
                   {STATUS_LABELS[agent.status as AgentVisualStatus]}
                 </span>
-                <span className="text-xs text-gray-400">
-                  · {timeAgo(agent.lastActiveAt)}
-                </span>
+                <span className="text-xs text-gray-400">· {timeAgo(agent.lastActiveAt)}</span>
               </div>
             </div>
           </button>
         ))}
         {agentList.length === 0 && (
-          <div className="px-3 py-6 text-center text-sm text-gray-400">
-            无匹配 Agent
-          </div>
+          <div className="px-3 py-6 text-center text-sm text-gray-400">无匹配 Agent</div>
         )}
       </div>
+
+      <SubAgentPanel />
 
       {selectedAgentId && <AgentDetailPanel />}
 
@@ -149,8 +143,14 @@ export function Sidebar() {
 
 function timeAgo(ts: number): string {
   const diff = Math.max(0, Math.floor((Date.now() - ts) / 1000));
-  if (diff < 5) return "刚刚";
-  if (diff < 60) return `${diff}秒前`;
-  if (diff < 3600) return `${Math.floor(diff / 60)}分前`;
+  if (diff < 5) {
+    return "刚刚";
+  }
+  if (diff < 60) {
+    return `${diff}秒前`;
+  }
+  if (diff < 3600) {
+    return `${Math.floor(diff / 60)}分前`;
+  }
   return `${Math.floor(diff / 3600)}时前`;
 }

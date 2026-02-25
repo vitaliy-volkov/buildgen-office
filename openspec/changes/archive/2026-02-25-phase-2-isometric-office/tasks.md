@@ -71,39 +71,39 @@
 
 ## 8. Sub-Agent 动画效果
 
-- [ ] 8.1 创建 `src/components/office-3d/SpawnPortal.tsx`——3 个同心 RingGeometry 光环旋转+缩放动画（800ms），位于父 Agent 位置
-- [ ] 8.2 实现 spawn 光束：父→子位置之间的临时 Line 光束（与光环同步消失）
-- [ ] 8.3 实现角色缩放出现动画：新 Sub-Agent 以 scale 0→1 + easeOutBack 缓动出现（800ms）
-- [ ] 8.4 创建 `src/components/office-3d/DespawnEffect.tsx`——三种消亡动画：complete（绿色淡出+上移+缩小）、error（红色闪烁 3 次后淡出）、killed（快速缩小 400ms）
-- [ ] 8.5 实现父子虚线连线：drei `<Line dashed dashScale={2}>` 连接父 Agent 和 Sub-Agent，颜色跟随 STATUS_COLORS[subAgent.status]
-- [ ] 8.6 验证动画效果：手动触发 Sub-Agent 后观察派生/消亡动画是否流畅
+- [x] 8.1 创建 `src/components/office-3d/SpawnPortal.tsx`——3 个同心 RingGeometry 光环旋转+缩放动画（800ms），位于父 Agent 位置
+- [x] 8.2 实现 spawn 光束：父→子位置之间的临时 Line 光束（与光环同步消失）
+- [x] 8.3 实现角色缩放出现动画：新 Sub-Agent 以 scale 0→1 + easeOutBack 缓动出现（800ms）
+- [x] 8.4 创建 `src/components/office-3d/DespawnEffect.tsx`——三种消亡动画：complete（绿色淡出+上移+缩小）、error（红色闪烁 3 次后淡出）、killed（快速缩小 400ms）
+- [x] 8.5 实现父子虚线连线：drei `<Line dashed dashScale={2}>` 连接父 Agent 和 Sub-Agent，颜色跟随 STATUS_COLORS[subAgent.status]
+- [x] 8.6 验证动画效果：手动触发 Sub-Agent 后观察派生/消亡动画是否流畅
 
 ## 9. 会议区协作聚集
 
-- [ ] 9.1 创建 `src/store/meeting-manager.ts`——封装协作检测+聚集逻辑：监听 store.links 变化，当同一 sessionKey 的 links 中有 2+ Agent 且 strength > 0.3 时触发聚集
-- [ ] 9.2 实现聚集动作：保存参与 Agent 的 originalPosition，计算会议桌座位位置，更新 agent.position 和 agent.zone
-- [ ] 9.3 实现返回动作：当所有相关 links 被移除或 strength 衰减到 0 时，恢复 originalPosition
-- [ ] 9.4 实现多组会议支持：按 sessionKey 分组，最多 3 组同时在会议区，各组分配不同的会议桌位置
-- [ ] 9.5 在 3D 场景中实现角色位置平滑过渡：使用 lerp 插值，过渡 800ms
-- [ ] 9.6 实现会议任务标签：圆桌上方 drei `<Html>` 显示参与 Agent 名称列表
-- [ ] 9.7 创建 `src/store/__tests__/meeting-manager.test.ts`——测试聚集触发/座位计算/返回原位逻辑
+- [x] 9.1 创建 `src/store/meeting-manager.ts`——封装协作检测+聚集逻辑：监听 store.links 变化，当同一 sessionKey 的 links 中有 2+ Agent 且 strength > 0.3 时触发聚集
+- [x] 9.2 实现聚集动作：保存参与 Agent 的 originalPosition，计算会议桌座位位置，更新 agent.position 和 agent.zone
+- [x] 9.3 实现返回动作：当所有相关 links 被移除或 strength 衰减到 0 时，恢复 originalPosition
+- [x] 9.4 实现多组会议支持：按 sessionKey 分组，最多 3 组同时在会议区，各组分配不同的会议桌位置
+- [x] 9.5 在 3D 场景中实现角色位置平滑过渡：使用 lerp 插值，过渡 800ms
+- [x] 9.6 实现会议任务标签：圆桌上方 drei `<Html>` 显示参与 Agent 名称列表
+- [x] 9.7 创建 `src/store/__tests__/meeting-manager.test.ts`——测试聚集触发/座位计算/返回原位逻辑
 
 ## 10. Sub-Agent 列表面板
 
-- [ ] 10.1 创建 `src/components/panels/SubAgentPanel.tsx`——展示活跃 Sub-Agent 卡片列表
-- [ ] 10.2 每个卡片显示：名称、父 Agent 名称（可点击选中父 Agent）、任务描述（截断 80 字符）、状态标签、运行时长
-- [ ] 10.3 点击卡片选中对应 Sub-Agent
-- [ ] 10.4 无活跃 Sub-Agent 时隐藏面板
-- [ ] 10.5 修改 `src/components/layout/Sidebar.tsx`——在 Agent 列表下方集成 SubAgentPanel
-- [ ] 10.6 创建 `src/components/panels/__tests__/SubAgentPanel.test.tsx`——测试卡片渲染、点击选中、空状态隐藏
+- [x] 10.1 创建 `src/components/panels/SubAgentPanel.tsx`——展示活跃 Sub-Agent 卡片列表
+- [x] 10.2 每个卡片显示：名称、父 Agent 名称（可点击选中父 Agent）、任务描述（截断 80 字符）、状态标签、运行时长
+- [x] 10.3 点击卡片选中对应 Sub-Agent
+- [x] 10.4 无活跃 Sub-Agent 时隐藏面板
+- [x] 10.5 修改 `src/components/layout/Sidebar.tsx`——在 Agent 列表下方集成 SubAgentPanel
+- [x] 10.6 创建 `src/components/panels/__tests__/SubAgentPanel.test.tsx`——测试卡片渲染、点击选中、空状态隐藏
 
 ## 11. 底部操作栏
 
-- [ ] 11.1 创建 `src/components/layout/ActionBar.tsx`——半透明底部浮动栏，包含 Pause / Spawn Sub-Agent / Interview 三个按钮
-- [ ] 11.2 实现显示/隐藏条件：有 Agent 被选中 OR 会议区有 Agent 时显示，否则隐藏
-- [ ] 11.3 实现滑入/滑出动画（transition duration 300ms）
-- [ ] 11.4 Phase 2 中按钮点击显示 tooltip "此功能将在后续版本中启用"
-- [ ] 11.5 集成到 `src/components/layout/AppShell.tsx`
+- [x] 11.1 创建 `src/components/layout/ActionBar.tsx`——半透明底部浮动栏，包含 Pause / Spawn Sub-Agent / Interview 三个按钮
+- [x] 11.2 实现显示/隐藏条件：有 Agent 被选中 OR 会议区有 Agent 时显示，否则隐藏
+- [x] 11.3 实现滑入/滑出动画（transition duration 300ms）
+- [x] 11.4 Phase 2 中按钮点击显示 tooltip "此功能将在后续版本中启用"
+- [x] 11.5 集成到 `src/components/layout/AppShell.tsx`
 
 ## 12. Store 扩展实现
 
@@ -116,35 +116,35 @@
 
 ## 13. 单元测试
 
-- [ ] 13.1 更新 `src/store/__tests__/office-store.test.ts`——验证扩展字段初始值（parentAgentId / childAgentIds / zone / originalPosition）
-- [ ] 13.2 测试 viewMode 切换：setViewMode("3d") → store.viewMode === "3d"
-- [ ] 13.3 创建 `src/lib/__tests__/webgl-detect.test.ts`——测试 isWebGLAvailable 在有/无 WebGL context 时的返回值
-- [ ] 13.4 测试 avatar-generator 3D 颜色生成：同一 agentId 返回相同颜色
+- [x] 13.1 更新 `src/store/__tests__/office-store.test.ts`——验证扩展字段初始值（parentAgentId / childAgentIds / zone / originalPosition）
+- [x] 13.2 测试 viewMode 切换：setViewMode("3d") → store.viewMode === "3d"
+- [x] 13.3 创建 `src/lib/__tests__/webgl-detect.test.ts`——测试 isWebGLAvailable 在有/无 WebGL context 时的返回值
+- [x] 13.4 测试 avatar-generator 3D 颜色生成：同一 agentId 返回相同颜色
 
 ## 14. 组件测试
 
-- [ ] 14.1 创建 `src/components/office-3d/__tests__/AgentCharacter.test.tsx`——验证角色接收 VisualAgent prop 渲染（使用 @react-three/test-renderer 或仅测试 props 传递逻辑）
-- [ ] 14.2 创建 `src/components/layout/__tests__/TopBar-viewmode.test.tsx`——测试 2D/3D 按钮点击调用 setViewMode
-- [ ] 14.3 创建 `src/components/layout/__tests__/ActionBar.test.tsx`——测试显示/隐藏条件、按钮 tooltip
+- [x] 14.1 创建 `src/components/office-3d/__tests__/AgentCharacter.test.tsx`——验证角色接收 VisualAgent prop 渲染（使用 @react-three/test-renderer 或仅测试 props 传递逻辑）
+- [x] 14.2 创建 `src/components/layout/__tests__/TopBar-viewmode.test.tsx`——测试 2D/3D 按钮点击调用 setViewMode
+- [x] 14.3 创建 `src/components/layout/__tests__/ActionBar.test.tsx`——测试显示/隐藏条件、按钮 tooltip
 
 ## 15. 集成测试
 
-- [ ] 15.1 创建 `src/hooks/__tests__/subagent-poller-integration.test.ts`——mock RPC 返回两轮不同 sessions.list，验证 Sub-Agent 自动创建和移除
-- [ ] 15.2 创建 `src/store/__tests__/meeting-manager-integration.test.ts`——模拟多 Agent 协作事件流 → 验证 Agent 移入会议区 → 协作结束 → 验证返回原位
+- [x] 15.1 创建 `src/hooks/__tests__/subagent-poller-integration.test.ts`——mock RPC 返回两轮不同 sessions.list，验证 Sub-Agent 自动创建和移除
+- [x] 15.2 创建 `src/store/__tests__/meeting-manager-integration.test.ts`——模拟多 Agent 协作事件流 → 验证 Agent 移入会议区 → 协作结束 → 验证返回原位
 
 ## 16. 端到端验证
 
-- [ ] 16.1 执行 `pnpm dev`，验证 2D 视图正常（Phase 1 功能无回归）
-- [ ] 16.2 切换到 3D 模式，验证 isometric 办公室场景渲染（灯光/地板/桌椅/区域标记）
-- [ ] 16.3 验证 Agent 角色在 3D 场景中正确渲染，颜色与 2D 圆点一致
-- [ ] 16.4 触发 Agent 运行，验证 5 种状态动画在 3D 场景中正确播放
-- [ ] 16.5 验证 Sub-Agent 检测：触发 Sub-Agent 后 3 秒内出现新角色 + 派生动画
-- [ ] 16.6 验证 Sub-Agent 消亡动画：Sub-Agent 完成后观察绿色消散效果
-- [ ] 16.7 验证父子连线：父 Agent 和 Sub-Agent 之间有虚线
-- [ ] 16.8 验证 Sub-Agent 面板：侧栏显示活跃 Sub-Agent 卡片
-- [ ] 16.9 验证会议区聚集：多 Agent 协作时角色移入会议区，协作结束后返回
-- [ ] 16.10 验证底部操作栏：选中 Agent 后出现操作栏，按钮显示 tooltip
-- [ ] 16.11 2D↔3D 来回切换，验证状态一致性
-- [ ] 16.12 执行 `pnpm test` 确认所有测试通过
-- [ ] 16.13 执行 `pnpm typecheck` 确认无类型错误
-- [ ] 16.14 执行 `pnpm check` 确认 lint + format 通过
+- [x] 16.1 执行 `pnpm dev`，验证 2D 视图正常（Phase 1 功能无回归）
+- [x] 16.2 切换到 3D 模式，验证 isometric 办公室场景渲染（灯光/地板/桌椅/区域标记）
+- [x] 16.3 验证 Agent 角色在 3D 场景中正确渲染，颜色与 2D 圆点一致
+- [x] 16.4 触发 Agent 运行，验证 5 种状态动画在 3D 场景中正确播放
+- [x] 16.5 验证 Sub-Agent 检测：触发 Sub-Agent 后 3 秒内出现新角色 + 派生动画
+- [x] 16.6 验证 Sub-Agent 消亡动画：Sub-Agent 完成后观察绿色消散效果
+- [x] 16.7 验证父子连线：父 Agent 和 Sub-Agent 之间有虚线
+- [x] 16.8 验证 Sub-Agent 面板：侧栏显示活跃 Sub-Agent 卡片
+- [x] 16.9 验证会议区聚集：多 Agent 协作时角色移入会议区，协作结束后返回
+- [x] 16.10 验证底部操作栏：选中 Agent 后出现操作栏，按钮显示 tooltip
+- [x] 16.11 2D↔3D 来回切换，验证状态一致性
+- [x] 16.12 执行 `pnpm test` 确认所有测试通过
+- [x] 16.13 执行 `pnpm typecheck` 确认无类型错误
+- [x] 16.14 执行 `pnpm check` 确认 lint + format 通过

@@ -1,15 +1,15 @@
 import { useEffect, useRef } from "react";
-import { GatewayWsClient } from "@/gateway/ws-client";
 import { GatewayRpcClient } from "@/gateway/rpc-client";
-import { EventThrottle } from "@/lib/event-throttle";
-import { useOfficeStore } from "@/store/office-store";
-import { useSubAgentPoller } from "./useSubAgentPoller";
 import type {
   AgentEventPayload,
   AgentSummary,
   GatewayEventFrame,
   HealthSnapshot,
 } from "@/gateway/types";
+import { GatewayWsClient } from "@/gateway/ws-client";
+import { EventThrottle } from "@/lib/event-throttle";
+import { useOfficeStore } from "@/store/office-store";
+import { useSubAgentPoller } from "./useSubAgentPoller";
 
 interface UseGatewayConnectionOptions {
   url: string;
@@ -26,7 +26,9 @@ export function useGatewayConnection({ url, token }: UseGatewayConnectionOptions
   const processAgentEvent = useOfficeStore((s) => s.processAgentEvent);
 
   useEffect(() => {
-    if (!url) return;
+    if (!url) {
+      return;
+    }
 
     const ws = new GatewayWsClient();
     const rpc = new GatewayRpcClient(ws);
@@ -83,7 +85,9 @@ export function useGatewayConnection({ url, token }: UseGatewayConnectionOptions
 }
 
 function healthAgentsToSummaries(health: HealthSnapshot): AgentSummary[] {
-  if (!health.agents) return [];
+  if (!health.agents) {
+    return [];
+  }
   return health.agents.map((a) => ({
     id: a.agentId,
     name: a.agentId,

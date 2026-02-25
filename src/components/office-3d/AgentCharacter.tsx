@@ -1,24 +1,32 @@
-import { useRef, useState } from "react";
-import { useFrame } from "@react-three/fiber";
 import { Html } from "@react-three/drei";
+import { useFrame } from "@react-three/fiber";
+import { useRef, useState } from "react";
 import Markdown from "react-markdown";
 import type { Group } from "three";
-import { useOfficeStore } from "@/store/office-store";
+import type { VisualAgent } from "@/gateway/types";
 import { generateAvatar3dColor } from "@/lib/avatar-generator";
-import { position2dTo3d } from "@/lib/position-allocator";
 import { STATUS_LABELS } from "@/lib/constants";
+import { position2dTo3d } from "@/lib/position-allocator";
+import { useOfficeStore } from "@/store/office-store";
+import { ErrorIndicator } from "./ErrorIndicator";
 import { ThinkingIndicator } from "./ThinkingIndicator";
 import { ToolScreen } from "./ToolScreen";
-import { ErrorIndicator } from "./ErrorIndicator";
-import type { VisualAgent } from "@/gateway/types";
 
 interface AgentCharacterProps {
   agent: VisualAgent;
 }
 
+function easeOutBack(t: number): number {
+  const c1 = 1.70158;
+  const c3 = c1 + 1;
+  return 1 + c3 * Math.pow(t - 1, 3) + c1 * Math.pow(t - 1, 2);
+}
+
 export function AgentCharacter({ agent }: AgentCharacterProps) {
   const groupRef = useRef<Group>(null);
   const bodyRef = useRef<Group>(null);
+  const spawnElapsed = useRef(0);
+  const spawnDone = useRef(!agent.isSubAgent);
   const selectAgent = useOfficeStore((s) => s.selectAgent);
   const selectedAgentId = useOfficeStore((s) => s.selectedAgentId);
   const [hovered, setHovered] = useState(false);
@@ -31,15 +39,37 @@ export function AgentCharacter({ agent }: AgentCharacterProps) {
   const bodyOpacity = isOffline ? 0.4 : isSubAgent ? 0.6 : 1;
   const displayColor = isOffline ? "#6b7280" : baseColor;
 
-  const [x, , z] = position2dTo3d(agent.position);
+  const [targetX, , targetZ] = position2dTo3d(agent.position);
 
-  useFrame((state) => {
-    if (!bodyRef.current) return;
+  useFrame((state, delta) => {
+    if (!groupRef.current) {
+      return;
+    }
     const t = state.clock.elapsedTime;
 
-    bodyRef.current.position.y = Math.sin(t * 2) * 0.02;
+    // Spawn scale-in animation for sub-agents (800ms, easeOutBack)
+    if (!spawnDone.current) {
+      spawnElapsed.current += delta;
+      const progress = Math.min(spawnElapsed.current / 0.8, 1);
+      const scale = easeOutBack(progress);
+      groupRef.current.scale.setScalar(scale);
+      if (progress >= 1) {
+        spawnDone.current = true;
+      }
+      return;
+    }
 
-    if (isSubAgent && groupRef.current) {
+    // Smooth position lerp (for meeting zone transitions)
+    const lerpFactor = 1 - Math.pow(0.05, delta);
+    const pos = groupRef.current.position;
+    pos.x += (targetX - pos.x) * lerpFactor;
+    pos.z += (targetZ - pos.z) * lerpFactor;
+
+    if (bodyRef.current) {
+      bodyRef.current.position.y = Math.sin(t * 2) * 0.02;
+    }
+
+    if (isSubAgent) {
       const pulse = 1.0 + Math.sin(t * 3) * 0.05;
       groupRef.current.scale.setScalar(pulse);
     }
@@ -48,7 +78,8 @@ export function AgentCharacter({ agent }: AgentCharacterProps) {
   return (
     <group
       ref={groupRef}
-      position={[x, 0, z]}
+      position={[targetX, 0, targetZ]}
+      scale={isSubAgent && !spawnDone.current ? 0 : 1}
       onClick={(e) => {
         e.stopPropagation();
         selectAgent(agent.id);
@@ -91,12 +122,7 @@ export function AgentCharacter({ agent }: AgentCharacterProps) {
 
       {/* Speaking bubble — uses transform={false} to render at fixed screen size */}
       {agent.status === "speaking" && agent.speechBubble && (
-        <Html
-          position={[0, 1.2, 0]}
-          center
-          transform={false}
-          style={{ pointerEvents: "none" }}
-        >
+        <Html position={[0, 1.2, 0]} center transform={false} style={{ pointerEvents: "none" }}>
           <div className="speech-bubble-3d pointer-events-none w-[280px] max-w-[320px] rounded-lg border border-gray-200 bg-white px-3 py-2 text-xs leading-relaxed text-gray-800 shadow-lg">
             <Markdown>{agent.speechBubble.text.slice(0, 400)}</Markdown>
           </div>
@@ -117,12 +143,7 @@ export function AgentCharacter({ agent }: AgentCharacterProps) {
       )}
 
       {hovered && (
-        <Html
-          position={[0, 1.1, 0]}
-          center
-          transform={false}
-          style={{ pointerEvents: "none" }}
-        >
+        <Html position={[0, 1.1, 0]} center transform={false} style={{ pointerEvents: "none" }}>
           <div className="pointer-events-none whitespace-nowrap rounded bg-gray-800 px-2 py-1 text-[11px] text-white shadow">
             {agent.name} — {STATUS_LABELS[agent.status]}
           </div>

@@ -1,8 +1,8 @@
-import { describe, it, expect, beforeEach } from "vitest";
 import { render, fireEvent } from "@testing-library/react";
+import { describe, it, expect, beforeEach } from "vitest";
 import { AgentDot } from "@/components/office-2d/AgentDot";
-import { useOfficeStore } from "@/store/office-store";
 import type { VisualAgent } from "@/gateway/types";
+import { useOfficeStore } from "@/store/office-store";
 
 const mockAgent: VisualAgent = {
   id: "a1",

@@ -30,6 +30,7 @@ export class GatewayWsClient {
   private responseHandlers = new Map<string, ResponseHandler>();
 
   private snapshot: HelloOk["snapshot"] | null = null;
+  private handleClose: () => void = () => {};
 
   getStatus(): ConnectionStatus {
     return this.status;
@@ -55,7 +56,7 @@ export class GatewayWsClient {
     this.shutdownReceived = true;
     this.clearReconnectTimer();
     if (this.ws) {
-      this.ws.onclose = null;
+      this.ws.removeEventListener("close", this.handleClose);
       this.ws.close();
       this.ws = null;
     }
@@ -88,9 +89,7 @@ export class GatewayWsClient {
   }
 
   private doConnect(): void {
-    this.setStatus(
-      this.reconnectAttempt > 0 ? "reconnecting" : "connecting",
-    );
+    this.setStatus(this.reconnectAttempt > 0 ? "reconnecting" : "connecting");
 
     try {
       this.ws = new WebSocket(this.url);
@@ -99,23 +98,22 @@ export class GatewayWsClient {
       return;
     }
 
-    this.ws.onopen = () => {
-      // Wait for challenge event from server
-    };
-
-    this.ws.onmessage = (e) => {
-      this.handleMessage(e);
-    };
-
-    this.ws.onclose = () => {
+    this.handleClose = () => {
       if (!this.shutdownReceived) {
         this.scheduleReconnect();
       }
     };
 
-    this.ws.onerror = () => {
+    this.ws.addEventListener("open", () => {
+      // Wait for challenge event from server
+    });
+    this.ws.addEventListener("message", (e) => {
+      this.handleMessage(e);
+    });
+    this.ws.addEventListener("close", this.handleClose);
+    this.ws.addEventListener("error", () => {
       // onclose will fire after onerror
-    };
+    });
   }
 
   private handleMessage(e: MessageEvent): void {
@@ -210,7 +208,9 @@ export class GatewayWsClient {
   }
 
   private scheduleReconnect(): void {
-    if (this.shutdownReceived) return;
+    if (this.shutdownReceived) {
+      return;
+    }
     if (this.reconnectAttempt >= MAX_RECONNECT_ATTEMPTS) {
       this.setStatus("disconnected");
       return;

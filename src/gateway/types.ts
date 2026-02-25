@@ -24,9 +24,7 @@ export interface GatewayResponseError {
   error: ErrorShape;
 }
 
-export type GatewayResponseFrame<T = unknown> =
-  | GatewayResponseOk<T>
-  | GatewayResponseError;
+export type GatewayResponseFrame<T = unknown> = GatewayResponseOk<T> | GatewayResponseError;
 
 export interface GatewayEventFrame<T = unknown> {
   type: "event";
@@ -34,10 +32,7 @@ export interface GatewayEventFrame<T = unknown> {
   payload: T;
 }
 
-export type GatewayFrame =
-  | GatewayRequest
-  | GatewayResponseFrame
-  | GatewayEventFrame;
+export type GatewayFrame = GatewayRequest | GatewayResponseFrame | GatewayEventFrame;
 
 // --- 认证 ---
 

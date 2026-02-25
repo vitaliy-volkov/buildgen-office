@@ -7,10 +7,7 @@ interface AvatarProps {
 }
 
 export function Avatar({ agentId, agentName, size = 32 }: AvatarProps) {
-  const { backgroundColor, textColor, initial } = generateAvatar(
-    agentId,
-    agentName,
-  );
+  const { backgroundColor, textColor, initial } = generateAvatar(agentId, agentName);
 
   return (
     <div

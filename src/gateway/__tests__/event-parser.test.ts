@@ -2,9 +2,7 @@ import { describe, it, expect } from "vitest";
 import { parseAgentEvent } from "@/gateway/event-parser";
 import type { AgentEventPayload } from "@/gateway/types";
 
-function makeEvent(
-  overrides: Partial<AgentEventPayload>,
-): AgentEventPayload {
+function makeEvent(overrides: Partial<AgentEventPayload>): AgentEventPayload {
   return {
     runId: "run-1",
     seq: 1,
@@ -18,9 +16,7 @@ function makeEvent(
 describe("parseAgentEvent", () => {
   describe("lifecycle stream", () => {
     it("phase=start → thinking", () => {
-      const result = parseAgentEvent(
-        makeEvent({ stream: "lifecycle", data: { phase: "start" } }),
-      );
+      const result = parseAgentEvent(makeEvent({ stream: "lifecycle", data: { phase: "start" } }));
       expect(result.status).toBe("thinking");
       expect(result.summary).toBe("开始运行");
     });
@@ -33,9 +29,7 @@ describe("parseAgentEvent", () => {
     });
 
     it("phase=end → idle + clear tool/speech", () => {
-      const result = parseAgentEvent(
-        makeEvent({ stream: "lifecycle", data: { phase: "end" } }),
-      );
+      const result = parseAgentEvent(makeEvent({ stream: "lifecycle", data: { phase: "end" } }));
       expect(result.status).toBe("idle");
       expect(result.clearTool).toBe(true);
       expect(result.clearSpeech).toBe(true);
@@ -125,9 +119,7 @@ describe("parseAgentEvent", () => {
     });
 
     it("missing data fields handled gracefully", () => {
-      const result = parseAgentEvent(
-        makeEvent({ stream: "tool", data: {} }),
-      );
+      const result = parseAgentEvent(makeEvent({ stream: "tool", data: {} }));
       expect(result.status).toBe("thinking");
     });
 

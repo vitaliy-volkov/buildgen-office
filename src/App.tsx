@@ -50,8 +50,7 @@ function OfficeView() {
 }
 
 export function App() {
-  const gatewayUrl =
-    import.meta.env.VITE_GATEWAY_URL || "ws://localhost:18789";
+  const gatewayUrl = import.meta.env.VITE_GATEWAY_URL || "ws://localhost:18789";
   const gatewayToken = import.meta.env.VITE_GATEWAY_TOKEN || "";
 
   useGatewayConnection({ url: gatewayUrl, token: gatewayToken });

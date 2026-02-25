@@ -1,12 +1,64 @@
+import { OrbitControls, Html } from "@react-three/drei";
 import { Canvas } from "@react-three/fiber";
-import { OrbitControls } from "@react-three/drei";
+import { useMemo } from "react";
+import { ZONES } from "@/lib/constants";
+import { position2dTo3d } from "@/lib/position-allocator";
+import { detectMeetingGroups } from "@/store/meeting-manager";
 import { useOfficeStore } from "@/store/office-store";
+import { AgentCharacter } from "./AgentCharacter";
 import { Environment3D } from "./Environment3D";
 import { OfficeLayout3D } from "./OfficeLayout3D";
-import { AgentCharacter } from "./AgentCharacter";
+import { ParentChildLine } from "./ParentChildLine";
 
 const SCENE_CENTER: [number, number, number] = [8, 0, 6];
 const BG_COLOR = "#e8ecf2";
+
+const MEETING_TABLE_CENTERS_2D = [
+  { x: ZONES.meeting.x + ZONES.meeting.width / 2, y: ZONES.meeting.y + ZONES.meeting.height / 2 },
+  {
+    x: ZONES.meeting.x + ZONES.meeting.width * 0.25,
+    y: ZONES.meeting.y + ZONES.meeting.height * 0.3,
+  },
+  {
+    x: ZONES.meeting.x + ZONES.meeting.width * 0.75,
+    y: ZONES.meeting.y + ZONES.meeting.height * 0.7,
+  },
+];
+
+function MeetingLabels() {
+  const agents = useOfficeStore((s) => s.agents);
+  const links = useOfficeStore((s) => s.links);
+
+  const groups = useMemo(() => detectMeetingGroups(links, agents), [links, agents]);
+
+  if (groups.length === 0) {
+    return null;
+  }
+
+  return (
+    <>
+      {groups.map((group, i) => {
+        const center = MEETING_TABLE_CENTERS_2D[i % MEETING_TABLE_CENTERS_2D.length];
+        const [cx, , cz] = position2dTo3d(center);
+        const names = group.agentIds.map((id) => agents.get(id)?.name ?? id.slice(0, 6)).join(", ");
+
+        return (
+          <Html
+            key={group.sessionKey}
+            position={[cx, 2, cz]}
+            center
+            transform={false}
+            style={{ pointerEvents: "none" }}
+          >
+            <div className="pointer-events-none rounded bg-blue-600/80 px-2 py-1 text-[10px] text-white shadow whitespace-nowrap">
+              {names}
+            </div>
+          </Html>
+        );
+      })}
+    </>
+  );
+}
 
 function SceneContent() {
   const agents = useOfficeStore((s) => s.agents);
@@ -14,7 +66,6 @@ function SceneContent() {
 
   return (
     <>
-      {/* Set WebGL clear color so the background is light, not black */}
       <color attach="background" args={[BG_COLOR]} />
       <OrbitControls
         enableRotate={true}
@@ -33,6 +84,16 @@ function SceneContent() {
       {agentList.map((agent) => (
         <AgentCharacter key={agent.id} agent={agent} />
       ))}
+      {agentList
+        .filter((a) => a.isSubAgent && a.parentAgentId)
+        .map((child) => {
+          const parent = agents.get(child.parentAgentId!);
+          if (!parent) {
+            return null;
+          }
+          return <ParentChildLine key={`line-${child.id}`} parent={parent} child={child} />;
+        })}
+      <MeetingLabels />
     </>
   );
 }

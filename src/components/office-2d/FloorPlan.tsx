@@ -1,9 +1,9 @@
-import { useOfficeStore } from "@/store/office-store";
+import { SpeechBubbleOverlay } from "@/components/overlays/SpeechBubble";
 import { SVG_WIDTH, SVG_HEIGHT, ZONES, ZONE_COLORS } from "@/lib/constants";
+import { useOfficeStore } from "@/store/office-store";
 import { AgentDot } from "./AgentDot";
 import { ConnectionLine } from "./ConnectionLine";
 import { ZoneLabel } from "./ZoneLabel";
-import { SpeechBubbleOverlay } from "@/components/overlays/SpeechBubble";
 
 export function FloorPlan() {
   const agents = useOfficeStore((s) => s.agents);
@@ -42,7 +42,9 @@ export function FloorPlan() {
         {links.map((link) => {
           const source = agents.get(link.sourceId);
           const target = agents.get(link.targetId);
-          if (!source || !target) return null;
+          if (!source || !target) {
+            return null;
+          }
           return (
             <ConnectionLine
               key={`${link.sourceId}-${link.targetId}`}

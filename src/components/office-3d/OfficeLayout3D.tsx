@@ -296,12 +296,7 @@ function ZoneFloor({
   return (
     <mesh position={position} rotation={[-Math.PI / 2, 0, 0]} receiveShadow>
       <planeGeometry args={size} />
-      <meshStandardMaterial
-        color={color}
-        transparent
-        opacity={0.15}
-        roughness={0.85}
-      />
+      <meshStandardMaterial color={color} transparent opacity={0.15} roughness={0.85} />
     </mesh>
   );
 }

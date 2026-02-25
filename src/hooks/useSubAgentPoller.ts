@@ -1,7 +1,7 @@
 import { useEffect, useRef } from "react";
 import type { GatewayRpcClient } from "@/gateway/rpc-client";
-import { useOfficeStore } from "@/store/office-store";
 import type { SubAgentInfo } from "@/gateway/types";
+import { useOfficeStore } from "@/store/office-store";
 
 const POLL_INTERVAL_MS = 3_000;
 
@@ -65,7 +65,9 @@ export function useSubAgentPoller(rpcClient: React.RefObject<GatewayRpcClient | 
 
     const poll = async () => {
       const rpc = rpcClient.current;
-      if (!rpc) return;
+      if (!rpc) {
+        return;
+      }
 
       try {
         const resp = await rpc.request<SessionsListResponse>("sessions.list");
@@ -102,16 +104,20 @@ export function useSubAgentPoller(rpcClient: React.RefObject<GatewayRpcClient | 
         timerRef.current = null;
       }
     };
-  // eslint-disable-next-line react-hooks/exhaustive-deps
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [connectionStatus]);
 
   function resolveParentAgent(requesterSessionKey: string): string | null {
     const sessionKeyMap = useOfficeStore.getState().sessionKeyMap;
     const agentIds = sessionKeyMap.get(requesterSessionKey);
-    if (agentIds && agentIds.length > 0) return agentIds[0];
+    if (agentIds && agentIds.length > 0) {
+      return agentIds[0];
+    }
 
     for (const [id, agent] of useOfficeStore.getState().agents) {
-      if (!agent.isSubAgent) return id;
+      if (!agent.isSubAgent) {
+        return id;
+      }
     }
     return null;
   }

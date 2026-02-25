@@ -39,16 +39,8 @@ function gridPositions(
   return positions;
 }
 
-const deskPositions = gridPositions(
-  ZONES.desk,
-  DESK_GRID_COLS,
-  DESK_GRID_ROWS,
-);
-const hotDeskPositions = gridPositions(
-  ZONES.hotDesk,
-  HOT_DESK_GRID_COLS,
-  HOT_DESK_GRID_ROWS,
-);
+const deskPositions = gridPositions(ZONES.desk, DESK_GRID_COLS, DESK_GRID_ROWS);
+const hotDeskPositions = gridPositions(ZONES.hotDesk, HOT_DESK_GRID_COLS, HOT_DESK_GRID_ROWS);
 
 function posKey(pos: { x: number; y: number }): string {
   return `${pos.x},${pos.y}`;
@@ -103,8 +95,8 @@ export function allocateMeetingPositions(
   return agentIds.map((_, i) => {
     const angle = (2 * Math.PI * i) / count - Math.PI / 2;
     return {
-      x: Math.round(tableCenter.x + Math.cos(angle) * MEETING_SEAT_RADIUS / SCALE_X_2D_TO_3D),
-      y: Math.round(tableCenter.y + Math.sin(angle) * MEETING_SEAT_RADIUS / SCALE_Z_2D_TO_3D),
+      x: Math.round(tableCenter.x + (Math.cos(angle) * MEETING_SEAT_RADIUS) / SCALE_X_2D_TO_3D),
+      y: Math.round(tableCenter.y + (Math.sin(angle) * MEETING_SEAT_RADIUS) / SCALE_Z_2D_TO_3D),
     };
   });
 }
