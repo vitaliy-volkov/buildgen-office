@@ -16,7 +16,7 @@ const ActivityHeatmap = lazy(() =>
 
 function TabSpinner() {
   return (
-    <div className="flex min-h-[200px] items-center justify-center">
+    <div className="flex min-h-[140px] items-center justify-center">
       <div className="h-6 w-6 animate-spin rounded-full border-2 border-blue-500 border-t-transparent" />
     </div>
   );
@@ -59,14 +59,14 @@ export function MetricsPanel() {
   ];
 
   return (
-    <div className="flex flex-col border-b border-gray-100 dark:border-gray-800">
-      <div className="grid grid-cols-2 gap-1.5 p-3">
+    <div className="flex flex-col">
+      <div className="grid grid-cols-2 gap-1.5 p-2">
         {cards.map((card) => (
-          <div key={card.label} className="rounded-lg bg-gray-50 px-2 py-1.5 text-center dark:bg-gray-800">
-            <div className="text-lg font-bold" style={{ color: card.color }}>
+          <div key={card.label} className="rounded-lg bg-gray-50 px-2 py-1 text-center dark:bg-gray-800">
+            <div className="text-base font-bold leading-tight" style={{ color: card.color }}>
               {card.value}
             </div>
-            <div className="text-[10px] text-gray-500 dark:text-gray-400">{card.label}</div>
+            <div className="text-[9px] text-gray-500 dark:text-gray-400">{card.label}</div>
           </div>
         ))}
       </div>
@@ -76,7 +76,7 @@ export function MetricsPanel() {
             key={t.id}
             type="button"
             onClick={() => setActiveTab(t.id)}
-            className={`rounded px-2 py-1 text-xs ${
+            className={`rounded px-2 py-0.5 text-[10px] ${
               activeTab === t.id ? "bg-gray-200 font-medium dark:bg-gray-700 dark:text-gray-200" : "text-gray-600 hover:bg-gray-100 dark:text-gray-400 dark:hover:bg-gray-800"
             }`}
           >
@@ -84,7 +84,7 @@ export function MetricsPanel() {
           </button>
         ))}
       </div>
-      <div className="min-h-[200px] p-2">
+      <div className="p-2">
         {activeTab === "overview" && (
           <Suspense fallback={<TabSpinner />}>
             <CostPieChart />

@@ -38,10 +38,9 @@ export function EventTimeline() {
   };
 
   return (
-    <div className="flex flex-col border-t border-gray-200 dark:border-gray-700">
-      <div className="flex items-center justify-between px-3 py-1.5">
-        <span className="text-xs font-medium text-gray-500 dark:text-gray-400">事件时间轴</span>
-        {!autoScroll && eventHistory.length > 0 && (
+    <div ref={scrollRef} onScroll={handleScroll} className="flex-1 overflow-y-auto">
+      {!autoScroll && eventHistory.length > 0 && (
+        <div className="sticky top-0 z-10 flex justify-end bg-white/80 px-2 py-0.5 backdrop-blur-sm dark:bg-gray-900/80">
           <button
             onClick={() => {
               setAutoScroll(true);
@@ -53,39 +52,37 @@ export function EventTimeline() {
           >
             新事件 ↓
           </button>
-        )}
-      </div>
-      <div ref={scrollRef} onScroll={handleScroll} className="max-h-40 overflow-y-auto">
-        {displayEvents.map((evt, i) => (
-          <button
-            key={`${evt.timestamp}-${evt.agentId}-${i}`}
-            onClick={() => selectAgent(evt.agentId)}
-            className="flex w-full items-start gap-1.5 border-t border-gray-100 px-3 py-1 text-left text-xs hover:bg-gray-50 dark:border-gray-800 dark:hover:bg-gray-800"
+        </div>
+      )}
+      {displayEvents.map((evt, i) => (
+        <button
+          key={`${evt.timestamp}-${evt.agentId}-${i}`}
+          onClick={() => selectAgent(evt.agentId)}
+          className="flex w-full items-start gap-1.5 border-b border-gray-100 px-3 py-1 text-left text-xs hover:bg-gray-50 dark:border-gray-800 dark:hover:bg-gray-800"
+        >
+          <span className="mt-0.5 shrink-0 text-gray-400">
+            {new Date(evt.timestamp).toLocaleTimeString("en-US", {
+              hour12: false,
+              hour: "2-digit",
+              minute: "2-digit",
+              second: "2-digit",
+            })}
+          </span>
+          <span className="shrink-0">{STREAM_ICONS[evt.stream] ?? "·"}</span>
+          <span
+            className="shrink-0 font-medium"
+            style={{
+              color: STATUS_COLORS[evt.stream === "error" ? "error" : "thinking"],
+            }}
           >
-            <span className="mt-0.5 shrink-0 text-gray-400">
-              {new Date(evt.timestamp).toLocaleTimeString("en-US", {
-                hour12: false,
-                hour: "2-digit",
-                minute: "2-digit",
-                second: "2-digit",
-              })}
-            </span>
-            <span className="shrink-0">{STREAM_ICONS[evt.stream] ?? "·"}</span>
-            <span
-              className="shrink-0 font-medium"
-              style={{
-                color: STATUS_COLORS[evt.stream === "error" ? "error" : "thinking"],
-              }}
-            >
-              {evt.agentName}
-            </span>
-            <span className="min-w-0 truncate text-gray-500 dark:text-gray-400">{evt.summary}</span>
-          </button>
-        ))}
-        {displayEvents.length === 0 && (
-          <div className="py-3 text-center text-xs text-gray-400 dark:text-gray-500">暂无事件</div>
-        )}
-      </div>
+            {evt.agentName}
+          </span>
+          <span className="min-w-0 truncate text-gray-500 dark:text-gray-400">{evt.summary}</span>
+        </button>
+      ))}
+      {displayEvents.length === 0 && (
+        <div className="py-3 text-center text-xs text-gray-400 dark:text-gray-500">暂无事件</div>
+      )}
     </div>
   );
 }

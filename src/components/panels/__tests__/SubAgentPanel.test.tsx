@@ -31,12 +31,12 @@ beforeEach(() => {
 });
 
 describe("SubAgentPanel", () => {
-  it("renders nothing when no sub-agents exist", () => {
+  it("renders empty hint when no sub-agents exist", () => {
     const parent = makeAgent({ id: "p1", name: "main" });
     useOfficeStore.setState({ agents: new Map([["p1", parent]]) });
 
-    const { container } = render(<SubAgentPanel />);
-    expect(container.innerHTML).toBe("");
+    render(<SubAgentPanel />);
+    expect(screen.getByText("无 Sub-Agent")).toBeDefined();
   });
 
   it("renders sub-agent cards when sub-agents exist", () => {
@@ -56,7 +56,6 @@ describe("SubAgentPanel", () => {
     });
 
     render(<SubAgentPanel />);
-    expect(screen.getByText("Sub-Agents (1)")).toBeDefined();
     expect(screen.getByText("Sub-abc123")).toBeDefined();
     const parentLink = screen.getByText("← main");
     expect(parentLink).toBeDefined();
