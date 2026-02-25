@@ -62,14 +62,14 @@ export function AgentDot({ agent }: AgentDotProps) {
             width={120}
             height={28}
             rx={4}
-            fill="#1e293b"
-            stroke="#475569"
+            fill="white"
+            stroke="#d1d5db"
             strokeWidth={0.5}
           />
           <text
             textAnchor="middle"
             dominantBaseline="central"
-            fill="#e2e8f0"
+            fill="#374151"
             fontSize={10}
             y={-2}
           >

@@ -124,6 +124,8 @@ export interface SpeechBubble {
   timestamp: number;
 }
 
+export type AgentZone = "desk" | "meeting" | "hotDesk" | "lounge";
+
 export interface VisualAgent {
   id: string;
   name: string;
@@ -136,6 +138,10 @@ export interface VisualAgent {
   toolCallHistory: ToolCallRecord[];
   runId: string | null;
   isSubAgent: boolean;
+  parentAgentId: string | null;
+  childAgentIds: string[];
+  zone: AgentZone;
+  originalPosition: { x: number; y: number } | null;
 }
 
 export interface ToolCallRecord {
@@ -157,6 +163,22 @@ export interface EventHistoryItem {
   agentName: string;
   stream: AgentStream;
   summary: string;
+}
+
+// --- Sub-Agent 轮询 ---
+
+export interface SubAgentInfo {
+  sessionKey: string;
+  agentId: string;
+  label: string;
+  task: string;
+  requesterSessionKey: string;
+  startedAt: number;
+}
+
+export interface SessionSnapshot {
+  sessions: SubAgentInfo[];
+  fetchedAt: number;
 }
 
 // --- 全局指标 ---
@@ -192,6 +214,7 @@ export interface OfficeStore {
   viewMode: ViewMode;
   eventHistory: EventHistoryItem[];
   sidebarCollapsed: boolean;
+  lastSessionsSnapshot: SessionSnapshot | null;
 
   // runId → agentId 映射
   runIdMap: Map<string, string>;
@@ -203,6 +226,17 @@ export interface OfficeStore {
   updateAgent: (id: string, patch: Partial<VisualAgent>) => void;
   removeAgent: (id: string) => void;
   initAgents: (agents: AgentSummary[]) => void;
+
+  // Sub-Agent 管理
+  addSubAgent: (parentId: string, info: SubAgentInfo) => void;
+  removeSubAgent: (subAgentId: string) => void;
+
+  // 会议区位置管理
+  moveToMeeting: (agentId: string, meetingPosition: { x: number; y: number }) => void;
+  returnFromMeeting: (agentId: string) => void;
+
+  // Sessions 轮询
+  setSessionsSnapshot: (snapshot: SessionSnapshot) => void;
 
   // 事件处理
   processAgentEvent: (event: AgentEventPayload) => void;

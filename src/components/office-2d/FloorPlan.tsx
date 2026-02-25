@@ -28,7 +28,7 @@ export function FloorPlan() {
             height={zone.height}
             rx={8}
             fill={ZONE_COLORS[key as keyof typeof ZONE_COLORS]}
-            stroke="#334155"
+            stroke="#c8d0dc"
             strokeWidth={1}
           />
         ))}

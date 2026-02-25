@@ -11,10 +11,10 @@ export const ZONES = {
 } as const;
 
 export const ZONE_COLORS = {
-  desk: "#1e293b",
-  meeting: "#1a2332",
-  hotDesk: "#1c2230",
-  lounge: "#1a1f2e",
+  desk: "#e8edf5",
+  meeting: "#e0eaf5",
+  hotDesk: "#e5e8f0",
+  lounge: "#e8e5f0",
 } as const;
 
 export const STATUS_COLORS: Record<AgentVisualStatus, string> = {
@@ -43,3 +43,13 @@ export const DESK_MAX_AGENTS = DESK_GRID_COLS * DESK_GRID_ROWS;
 
 export const HOT_DESK_GRID_COLS = 4;
 export const HOT_DESK_GRID_ROWS = 3;
+
+// 3D 场景常量
+// SVG 1200×700 maps to 3D building 16×12 world units
+export const SCALE_X_2D_TO_3D = 16 / SVG_WIDTH;
+export const SCALE_Z_2D_TO_3D = 12 / SVG_HEIGHT;
+export const SCALE_2D_TO_3D = 0.01; // legacy — kept for tests
+export const DESK_HEIGHT = 0.42;
+export const CHARACTER_Y = 0;
+export const MEETING_TABLE_RADIUS = 1.2;
+export const MEETING_SEAT_RADIUS = 1.7;

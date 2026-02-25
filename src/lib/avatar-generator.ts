@@ -39,3 +39,9 @@ export function generateAvatar(
 
   return { backgroundColor, textColor, initial };
 }
+
+/** Deterministic hex color for 3D MeshStandardMaterial */
+export function generateAvatar3dColor(agentId: string): string {
+  const hash = hashString(agentId);
+  return PALETTE[hash % PALETTE.length];
+}

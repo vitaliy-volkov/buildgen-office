@@ -49,10 +49,10 @@ export function Sidebar() {
 
   if (collapsed) {
     return (
-      <aside className="flex w-12 flex-col items-center border-l border-gray-800 bg-gray-950 py-3">
+      <aside className="flex w-12 flex-col items-center border-l border-gray-200 bg-white py-3">
         <button
           onClick={() => setSidebarCollapsed(false)}
-          className="text-gray-400 hover:text-gray-200"
+          className="text-gray-400 hover:text-gray-700"
           title="展开侧栏"
         >
           ◀
@@ -62,12 +62,12 @@ export function Sidebar() {
   }
 
   return (
-    <aside className="flex w-80 flex-col border-l border-gray-800 bg-gray-950">
-      <div className="flex items-center justify-between border-b border-gray-800 px-3 py-2">
-        <span className="text-sm font-medium text-gray-300">Agents</span>
+    <aside className="flex w-80 flex-col border-l border-gray-200 bg-white">
+      <div className="flex items-center justify-between border-b border-gray-100 px-3 py-2">
+        <span className="text-sm font-medium text-gray-700">Agents</span>
         <button
           onClick={() => setSidebarCollapsed(true)}
-          className="text-gray-500 hover:text-gray-300"
+          className="text-gray-400 hover:text-gray-600"
           title="折叠侧栏"
         >
           ▶
@@ -76,13 +76,13 @@ export function Sidebar() {
 
       <MetricsPanel />
 
-      <div className="border-b border-gray-800 px-3 py-2">
+      <div className="border-b border-gray-100 px-3 py-2">
         <input
           type="text"
           placeholder="搜索 Agent..."
           value={search}
           onChange={(e) => setSearch(e.target.value)}
-          className="w-full rounded bg-gray-900 px-2 py-1 text-sm text-gray-200 placeholder-gray-500 outline-none focus:ring-1 focus:ring-blue-500"
+          className="w-full rounded border border-gray-200 bg-gray-50 px-2 py-1 text-sm text-gray-800 placeholder-gray-400 outline-none focus:border-blue-400 focus:ring-1 focus:ring-blue-400"
         />
         <div className="mt-2 flex gap-1">
           {FILTER_TAGS.map((tag) => (
@@ -92,7 +92,7 @@ export function Sidebar() {
               className={`rounded px-2 py-0.5 text-xs transition-colors ${
                 filter === tag.key
                   ? "bg-blue-600 text-white"
-                  : "bg-gray-800 text-gray-400 hover:bg-gray-700"
+                  : "bg-gray-100 text-gray-500 hover:bg-gray-200"
               }`}
             >
               {tag.label}
@@ -106,13 +106,13 @@ export function Sidebar() {
           <button
             key={agent.id}
             onClick={() => selectAgent(agent.id)}
-            className={`flex w-full items-center gap-3 border-b border-gray-800/50 px-3 py-2.5 text-left transition-colors hover:bg-gray-900 ${
-              selectedAgentId === agent.id ? "bg-gray-800/60" : ""
+            className={`flex w-full items-center gap-3 border-b border-gray-50 px-3 py-2.5 text-left transition-colors hover:bg-gray-50 ${
+              selectedAgentId === agent.id ? "bg-blue-50" : ""
             }`}
           >
             <Avatar agentId={agent.id} agentName={agent.name} size={28} />
             <div className="min-w-0 flex-1">
-              <div className="truncate text-sm font-medium text-gray-200">
+              <div className="truncate text-sm font-medium text-gray-800">
                 {agent.name}
               </div>
               <div className="flex items-center gap-1.5">
@@ -126,7 +126,7 @@ export function Sidebar() {
                 <span className="text-xs text-gray-500">
                   {STATUS_LABELS[agent.status as AgentVisualStatus]}
                 </span>
-                <span className="text-xs text-gray-600">
+                <span className="text-xs text-gray-400">
                   · {timeAgo(agent.lastActiveAt)}
                 </span>
               </div>
@@ -134,7 +134,7 @@ export function Sidebar() {
           </button>
         ))}
         {agentList.length === 0 && (
-          <div className="px-3 py-6 text-center text-sm text-gray-600">
+          <div className="px-3 py-6 text-center text-sm text-gray-400">
             无匹配 Agent
           </div>
         )}

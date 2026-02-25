@@ -15,6 +15,8 @@ import type {
   ConnectionStatus,
   EventHistoryItem,
   OfficeStore,
+  SessionSnapshot,
+  SubAgentInfo,
   ViewMode,
   VisualAgent,
 } from "@/gateway/types";
@@ -41,6 +43,10 @@ function createVisualAgent(
     toolCallHistory: [],
     runId: null,
     isSubAgent,
+    parentAgentId: null,
+    childAgentIds: [],
+    zone: "desk" as const,
+    originalPosition: null,
   };
 }
 
@@ -65,6 +71,7 @@ export const useOfficeStore = create<OfficeStore>()(
     viewMode: "2d" as ViewMode,
     eventHistory: [],
     sidebarCollapsed: false,
+    lastSessionsSnapshot: null,
     runIdMap: new Map(),
     sessionKeyMap: new Map(),
 
@@ -92,6 +99,71 @@ export const useOfficeStore = create<OfficeStore>()(
           state.selectedAgentId = null;
         }
         state.globalMetrics = computeMetrics(state.agents, state.globalMetrics);
+      });
+    },
+
+    addSubAgent: (parentId: string, info: SubAgentInfo) => {
+      set((state) => {
+        const occupied = new Set<string>();
+        for (const a of state.agents.values()) {
+          occupied.add(positionKey(a.position));
+        }
+        const agent = createVisualAgent(info.agentId, info.label || `Sub-${info.agentId.slice(0, 6)}`, true, occupied);
+        agent.parentAgentId = parentId;
+        agent.zone = "hotDesk";
+        agent.runId = info.sessionKey;
+        state.agents.set(info.agentId, agent);
+
+        const parent = state.agents.get(parentId);
+        if (parent) {
+          parent.childAgentIds.push(info.agentId);
+        }
+        state.globalMetrics = computeMetrics(state.agents, state.globalMetrics);
+      });
+    },
+
+    removeSubAgent: (subAgentId: string) => {
+      set((state) => {
+        const sub = state.agents.get(subAgentId);
+        if (sub?.parentAgentId) {
+          const parent = state.agents.get(sub.parentAgentId);
+          if (parent) {
+            parent.childAgentIds = parent.childAgentIds.filter((id) => id !== subAgentId);
+          }
+        }
+        state.agents.delete(subAgentId);
+        if (state.selectedAgentId === subAgentId) {
+          state.selectedAgentId = null;
+        }
+        state.globalMetrics = computeMetrics(state.agents, state.globalMetrics);
+      });
+    },
+
+    moveToMeeting: (agentId: string, meetingPosition: { x: number; y: number }) => {
+      set((state) => {
+        const agent = state.agents.get(agentId);
+        if (agent) {
+          agent.originalPosition = { ...agent.position };
+          agent.position = meetingPosition;
+          agent.zone = "meeting";
+        }
+      });
+    },
+
+    returnFromMeeting: (agentId: string) => {
+      set((state) => {
+        const agent = state.agents.get(agentId);
+        if (agent?.originalPosition) {
+          agent.position = { ...agent.originalPosition };
+          agent.zone = "desk";
+          agent.originalPosition = null;
+        }
+      });
+    },
+
+    setSessionsSnapshot: (snapshot: SessionSnapshot) => {
+      set((state) => {
+        state.lastSessionsSnapshot = snapshot;
       });
     },
 

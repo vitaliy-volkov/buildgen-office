@@ -3,6 +3,7 @@ import { GatewayWsClient } from "@/gateway/ws-client";
 import { GatewayRpcClient } from "@/gateway/rpc-client";
 import { EventThrottle } from "@/lib/event-throttle";
 import { useOfficeStore } from "@/store/office-store";
+import { useSubAgentPoller } from "./useSubAgentPoller";
 import type {
   AgentEventPayload,
   AgentSummary,
@@ -75,6 +76,8 @@ export function useGatewayConnection({ url, token }: UseGatewayConnectionOptions
       throttleRef.current = null;
     };
   }, [url, token, setConnectionStatus, initAgents, processAgentEvent]);
+
+  useSubAgentPoller(rpcRef);
 
   return { wsClient: wsRef, rpcClient: rpcRef };
 }

@@ -27,11 +27,11 @@ export function MetricsPanel() {
   ];
 
   return (
-    <div className="grid grid-cols-2 gap-1.5 border-b border-gray-800 p-3">
+    <div className="grid grid-cols-2 gap-1.5 border-b border-gray-100 p-3">
       {cards.map((card) => (
         <div
           key={card.label}
-          className="rounded bg-gray-900 px-2 py-1.5 text-center"
+          className="rounded-lg bg-gray-50 px-2 py-1.5 text-center"
         >
           <div
             className="text-lg font-bold"

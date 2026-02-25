@@ -16,6 +16,10 @@ const mockAgent: VisualAgent = {
   toolCallHistory: [],
   runId: null,
   isSubAgent: false,
+  parentAgentId: null,
+  childAgentIds: [],
+  zone: "desk",
+  originalPosition: null,
 };
 
 function renderDot(agent: VisualAgent = mockAgent) {

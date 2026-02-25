@@ -5,6 +5,9 @@ import {
   DESK_MAX_AGENTS,
   HOT_DESK_GRID_COLS,
   HOT_DESK_GRID_ROWS,
+  SCALE_X_2D_TO_3D,
+  SCALE_Z_2D_TO_3D,
+  MEETING_SEAT_RADIUS,
 } from "./constants";
 
 function hashString(str: string): number {
@@ -82,4 +85,26 @@ export function allocatePosition(
     x: fallbackZone.x + 30 + (hashString(agentId) % (fallbackZone.width - 60)),
     y: fallbackZone.y + 30 + (hashString(agentId) % (fallbackZone.height - 60)),
   };
+}
+
+/** Map 2D SVG coordinates to 3D world coordinates: x→x, y→z, ground plane y=0 */
+export function position2dTo3d(pos: { x: number; y: number }): [number, number, number] {
+  return [pos.x * SCALE_X_2D_TO_3D, 0, pos.y * SCALE_Z_2D_TO_3D];
+}
+
+/** Allocate equi-angular positions around a meeting table center */
+export function allocateMeetingPositions(
+  agentIds: string[],
+  tableCenter: { x: number; y: number },
+): Array<{ x: number; y: number }> {
+  const count = agentIds.length;
+  if (count === 0) return [];
+
+  return agentIds.map((_, i) => {
+    const angle = (2 * Math.PI * i) / count - Math.PI / 2;
+    return {
+      x: Math.round(tableCenter.x + Math.cos(angle) * MEETING_SEAT_RADIUS / SCALE_X_2D_TO_3D),
+      y: Math.round(tableCenter.y + Math.sin(angle) * MEETING_SEAT_RADIUS / SCALE_Z_2D_TO_3D),
+    };
+  });
 }

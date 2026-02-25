@@ -19,6 +19,7 @@ function resetStore() {
     viewMode: "2d",
     eventHistory: [],
     sidebarCollapsed: false,
+    lastSessionsSnapshot: null,
     runIdMap: new Map(),
     sessionKeyMap: new Map(),
   });

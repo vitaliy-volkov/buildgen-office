@@ -13,12 +13,12 @@ export function AgentDetailPanel() {
   if (!agent) return null;
 
   return (
-    <div className="border-t border-gray-800 bg-gray-950/80">
-      <div className="flex items-center justify-between border-b border-gray-800/50 px-3 py-2">
-        <span className="text-xs font-medium text-gray-400">Agent 详情</span>
+    <div className="border-t border-gray-100 bg-gray-50">
+      <div className="flex items-center justify-between border-b border-gray-100 px-3 py-2">
+        <span className="text-xs font-medium text-gray-500">Agent 详情</span>
         <button
           onClick={() => selectAgent(null)}
-          className="text-xs text-gray-500 hover:text-gray-300"
+          className="text-xs text-gray-400 hover:text-gray-600"
         >
           ✕
         </button>
@@ -28,7 +28,7 @@ export function AgentDetailPanel() {
         <div className="mb-3 flex items-center gap-2">
           <Avatar agentId={agent.id} agentName={agent.name} size={36} />
           <div>
-            <div className="text-sm font-medium text-gray-200">
+            <div className="text-sm font-medium text-gray-800">
               {agent.name}
             </div>
             <div className="flex items-center gap-1">
@@ -36,7 +36,7 @@ export function AgentDetailPanel() {
                 className="inline-block h-2 w-2 rounded-full"
                 style={{ backgroundColor: STATUS_COLORS[agent.status] }}
               />
-              <span className="text-xs text-gray-400">
+              <span className="text-xs text-gray-500">
                 {STATUS_LABELS[agent.status]}
               </span>
             </div>
@@ -44,31 +44,31 @@ export function AgentDetailPanel() {
         </div>
 
         {agent.currentTool && (
-          <div className="mb-2 rounded bg-gray-900 px-2 py-1.5 text-xs">
-            <div className="text-orange-400">
+          <div className="mb-2 rounded bg-orange-50 px-2 py-1.5 text-xs">
+            <div className="text-orange-600">
               🔧 {agent.currentTool.name}
             </div>
           </div>
         )}
 
         {agent.speechBubble && (
-          <div className="mb-2 rounded bg-gray-900 px-2 py-1.5 text-xs text-gray-300">
+          <div className="mb-2 rounded bg-white px-2 py-1.5 text-xs leading-relaxed text-gray-700 shadow-sm">
             <Markdown>{agent.speechBubble.text}</Markdown>
           </div>
         )}
 
         {agent.toolCallHistory.length > 0 && (
           <div className="mt-2">
-            <div className="mb-1 text-xs font-medium text-gray-500">
+            <div className="mb-1 text-xs font-medium text-gray-400">
               工具调用历史
             </div>
             {agent.toolCallHistory.map((t, i) => (
               <div
                 key={`${t.name}-${t.timestamp}-${i}`}
-                className="flex items-center justify-between border-b border-gray-800/30 py-1 text-xs text-gray-400"
+                className="flex items-center justify-between border-b border-gray-100 py-1 text-xs text-gray-500"
               >
                 <span>{t.name}</span>
-                <span className="text-gray-600">
+                <span className="text-gray-400">
                   {new Date(t.timestamp).toLocaleTimeString()}
                 </span>
               </div>
