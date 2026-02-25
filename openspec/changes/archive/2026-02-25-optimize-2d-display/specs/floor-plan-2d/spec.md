@@ -1,8 +1,5 @@
-# floor-plan-2d Specification
+## MODIFIED Requirements
 
-## Purpose
-TBD - created by archiving change phase-1-foundation. Update Purpose after archive.
-## Requirements
 ### Requirement: SVG 办公室平面图
 
 系统 SHALL 渲染一个 SVG 办公室平面图，使用 `viewBox="0 0 1200 700"` 固定坐标系，包含四个可辨识的功能区域，并增加阴影、圆角和渐变等视觉细节。
@@ -46,25 +43,6 @@ TBD - created by archiving change phase-1-foundation. Update Purpose after archi
 - **WHEN** 用户点击 Agent 圆点
 - **THEN** 系统 SHALL 调用 `selectAgent(agentId)`，选中的 Agent 圆点显示高亮边框和发光效果，右侧面板展开 AgentDetailPanel
 
-### Requirement: 工位分配算法
-
-系统 SHALL 为每个 Agent 确定性地分配平面图上的坐标位置。
-
-#### Scenario: 常驻 Agent 固定工位
-
-- **WHEN** 从 `agents.list` 加载的 Agent（非 Sub-Agent）
-- **THEN** 系统 SHALL 通过 agentId 的 hash 值在 Desk Zone 的预设网格中确定性分配位置，同一 agentId 每次计算结果相同
-
-#### Scenario: 动态 Agent 热工位
-
-- **WHEN** 运行时出现新 Agent（未在 agents.list 中，可能是 Sub-Agent 或新创建的 Agent）
-- **THEN** 系统 SHALL 按顺序分配 Hot Desk Zone 的空闲位置
-
-#### Scenario: 工位容量上限
-
-- **WHEN** Desk Zone 已满（超过 12 个 Agent）
-- **THEN** 溢出的 Agent SHALL 分配到 Hot Desk Zone
-
 ### Requirement: Agent 间协作连线
 
 系统 SHALL 在有协作关系的 Agent 之间渲染可视连线，并带有更具科技感的流动动画。
@@ -78,23 +56,3 @@ TBD - created by archiving change phase-1-foundation. Update Purpose after archi
 
 - **WHEN** 连线渲染
 - **THEN** 虚线 SHALL 有 dash-offset 循环动画，模拟数据流动方向，动画速度和流畅度需优化以体现科技感。
-
-### Requirement: 对话气泡
-
-系统 SHALL 在 speaking 状态的 Agent 上方显示对话气泡。
-
-#### Scenario: 气泡内容渲染
-
-- **WHEN** Agent 状态为 `"speaking"` 且 `speechBubble` 不为空
-- **THEN** 系统 SHALL 在 Agent 圆点上方渲染气泡，使用 react-markdown 渲染 `speechBubble.text` 内容，气泡最大宽度 280px
-
-#### Scenario: 气泡自动淡出
-
-- **WHEN** Agent 状态从 `"speaking"` 变为其他状态后 5 秒
-- **THEN** 气泡 SHALL 以淡出动画消失（opacity 1→0，duration 500ms）
-
-#### Scenario: 气泡定位
-
-- **WHEN** 气泡渲染
-- **THEN** 气泡 SHALL 定位在 Agent 圆点上方 40px 处，使用 HTML overlay（position absolute）叠加在 SVG 上方，并有指向圆点的小三角箭头
-

@@ -22,6 +22,18 @@ export function FloorPlan() {
         className="h-full w-full"
         preserveAspectRatio="xMidYMid meet"
       >
+        <defs>
+          <filter id="zone-shadow" x="-5%" y="-5%" width="110%" height="110%">
+            <feDropShadow dx="0" dy="4" stdDeviation="8" floodOpacity={isDark ? 0.3 : 0.05} />
+          </filter>
+          {Object.entries(zoneColors).map(([key, color]) => (
+            <linearGradient key={`grad-${key}`} id={`grad-${key}`} x1="0%" y1="0%" x2="100%" y2="100%">
+              <stop offset="0%" stopColor={color} stopOpacity={1} />
+              <stop offset="100%" stopColor={color} stopOpacity={0.6} />
+            </linearGradient>
+          ))}
+        </defs>
+
         {/* Zone backgrounds */}
         {Object.entries(ZONES).map(([key, zone]) => (
           <rect
@@ -30,10 +42,11 @@ export function FloorPlan() {
             y={zone.y}
             width={zone.width}
             height={zone.height}
-            rx={8}
-            fill={zoneColors[key as keyof typeof ZONE_COLORS]}
+            rx={16}
+            fill={`url(#grad-${key})`}
             stroke={zoneStroke}
             strokeWidth={1}
+            filter="url(#zone-shadow)"
           />
         ))}
 
