@@ -51,6 +51,18 @@ let meetingGatheringTimer: ReturnType<typeof setTimeout> | null = null;
 let lastMeetingGroupsHash = "";
 const MEETING_GATHERING_THROTTLE_MS = 500;
 
+function displayAgentName(rawName: string | undefined, fallbackId: string): string {
+  const n = (rawName || "").trim();
+  const lower = n.toLowerCase();
+
+  if (lower === "main" || fallbackId === "main") return "Аркадий";
+  if (n.startsWith("Agent-")) return n.replace(/^Agent-/, "Агент-");
+  if (n.startsWith("Sub-")) return n.replace(/^Sub-/, "Подагент-");
+  if (!n) return `Агент-${fallbackId.slice(0, 6)}`;
+
+  return n;
+}
+
 function isActiveStatus(status: AgentVisualStatus): boolean {
   return status === "thinking" || status === "tool_calling" || status === "speaking" || status === "spawning";
 }
@@ -279,14 +291,14 @@ export const useOfficeStore = create<OfficeStore>()(
           existingAgent.confirmed = true;
           existingAgent.isSubAgent = true;
           existingAgent.parentAgentId = parentId;
-          existingAgent.name = info.label || existingAgent.name;
+          existingAgent.name = displayAgentName(info.label, info.agentId) || existingAgent.name;
           // Transfer status/tool/speech to a lounge placeholder position for walk animation
           activateFromLoungePlaceholder(state, existingAgent);
         } else if (existingAgent && existingAgent.confirmed) {
           // Already confirmed (e.g. second poll cycle) — just update parent/name
           if (!existingAgent.isSubAgent) existingAgent.isSubAgent = true;
           existingAgent.parentAgentId = parentId;
-          existingAgent.name = info.label || existingAgent.name;
+          existingAgent.name = displayAgentName(info.label, info.agentId) || existingAgent.name;
         } else {
           // Not yet seen — activate a lounge placeholder or create fresh
           let placeholder: VisualAgent | undefined;
@@ -303,7 +315,7 @@ export const useOfficeStore = create<OfficeStore>()(
             state.agents.delete(oldId);
 
             placeholder.id = info.agentId;
-            placeholder.name = info.label || `Sub-${info.agentId.slice(0, 6)}`;
+            placeholder.name = displayAgentName(info.label || `Подагент-${info.agentId.slice(0, 6)}`, info.agentId);
             placeholder.isPlaceholder = false;
             placeholder.isSubAgent = true;
             placeholder.parentAgentId = parentId;
@@ -319,7 +331,7 @@ export const useOfficeStore = create<OfficeStore>()(
             }
             const agent = createVisualAgent(
               info.agentId,
-              info.label || `Sub-${info.agentId.slice(0, 6)}`,
+              displayAgentName(info.label || `Подагент-${info.agentId.slice(0, 6)}`, info.agentId),
               true,
               occupied,
             );
@@ -402,7 +414,7 @@ export const useOfficeStore = create<OfficeStore>()(
           const phId = `placeholder-${phIdx}`;
           const ph: VisualAgent = {
             id: phId,
-            name: `待命-${phIdx}`,
+            name: `Ожидание-${phIdx}`,
             status: "idle",
             position: freeLounge,
             currentTool: null,
@@ -519,7 +531,7 @@ export const useOfficeStore = create<OfficeStore>()(
           if (state.agents.has(phId)) continue;
           const ph: VisualAgent = {
             id: phId,
-            name: `待命-${i}`,
+            name: `Ожидание-${i}`,
             status: "idle",
             position: { ...loungePositions[i] },
             currentTool: null,
@@ -595,7 +607,8 @@ export const useOfficeStore = create<OfficeStore>()(
 
         const occupied = new Set<string>();
         for (const summary of summaries) {
-          const name = summary.identity?.name ?? summary.name ?? summary.id;
+          const rawName = summary.identity?.name ?? summary.name ?? summary.id;
+          const name = displayAgentName(rawName, summary.id);
           const agent = createVisualAgent(summary.id, name, false, occupied);
           occupied.add(positionKey(agent.position));
           state.agents.set(summary.id, agent);
@@ -657,7 +670,7 @@ export const useOfficeStore = create<OfficeStore>()(
             info: {
               sessionKey: event.sessionKey ?? event.runId,
               agentId: dataAgentId,
-              label: `Sub-${dataAgentId.slice(0, 8)}`,
+              label: `Подагент-${dataAgentId.slice(0, 8)}`,
               task: "",
               requesterSessionKey: event.sessionKey ?? "",
               startedAt: event.ts,
@@ -675,12 +688,12 @@ export const useOfficeStore = create<OfficeStore>()(
             for (const a of state.agents.values()) {
               occupied.add(positionKey(a.position));
             }
-            const agent = createVisualAgent(agentId, `Agent-${agentId.slice(0, 6)}`, false, occupied, true);
+            const agent = createVisualAgent(agentId, `Агент-${agentId.slice(0, 6)}`, false, occupied, true);
             agent.runId = event.runId;
             state.agents.set(agentId, agent);
           } else {
             // Create as unconfirmed — will be confirmed by poller or timeout
-            const agent = createVisualAgent(agentId, `Agent-${agentId.slice(0, 6)}`, false, new Set(), false);
+            const agent = createVisualAgent(agentId, `Агент-${agentId.slice(0, 6)}`, false, new Set(), false);
             agent.runId = event.runId;
             state.agents.set(agentId, agent);
             newUnconfirmedId = agentId;
