@@ -53,6 +53,14 @@ function buildSessionKey(agentId: string): string {
   return `agent:${agentId}:main`;
 }
 
+function pickLatestAgentSessionKey(agentId: string, sessions: SessionInfo[]): string {
+  const prefix = `agent:${agentId}:`;
+  const matched = sessions
+    .filter((s) => s.key.startsWith(prefix))
+    .sort((a, b) => b.lastActiveAt - a.lastActiveAt);
+  return matched[0]?.key ?? buildSessionKey(agentId);
+}
+
 function extractText(content: unknown): string {
   if (typeof content === "string") return content;
   if (Array.isArray(content)) {
@@ -181,7 +189,17 @@ export const useChatDockStore = create<ChatDockState>((set, get) => ({
     try {
       const adapter = getAdapter();
       const result = await adapter.sessionsList();
-      set({ sessions: Array.isArray(result) ? result : [] });
+      const sessions = Array.isArray(result) ? result : [];
+      set({ sessions });
+
+      const { targetAgentId, currentSessionKey } = get();
+      if (targetAgentId) {
+        const preferred = pickLatestAgentSessionKey(targetAgentId, sessions);
+        if (preferred !== currentSessionKey) {
+          set({ currentSessionKey: preferred, messages: [], isHistoryLoaded: false });
+          get().initializeHistory();
+        }
+      }
     } catch {
       // Silently handle — sessions not critical
     }
@@ -231,7 +249,8 @@ export const useChatDockStore = create<ChatDockState>((set, get) => ({
   },
 
   setTargetAgent: (agentId) => {
-    const sessionKey = buildSessionKey(agentId);
+    const { sessions } = get();
+    const sessionKey = pickLatestAgentSessionKey(agentId, sessions);
     set({
       targetAgentId: agentId,
       currentSessionKey: sessionKey,
