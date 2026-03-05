@@ -40,7 +40,7 @@ interface ChatDockState {
   loadHistory: () => Promise<void>;
   initializeHistory: () => Promise<void>;
   setTargetAgent: (agentId: string) => void;
-  handleChatEvent: (event: Record<string, unknown>) => void;
+  handleChatEvent: (event: Record<string, unknown>, frameSessionKey?: string) => void;
   clearError: () => void;
   initEventListeners: (
     wsClient: {
@@ -245,7 +245,15 @@ export const useChatDockStore = create<ChatDockState>((set, get) => ({
     get().initializeHistory();
   },
 
-  handleChatEvent: (event) => {
+  handleChatEvent: (event, frameSessionKey) => {
+    const storeSessionKey = get().currentSessionKey;
+    const payloadSessionKey = String(event.sessionKey || frameSessionKey || "");
+
+    // Critical: ignore chat events from other sessions/agents
+    if (payloadSessionKey && payloadSessionKey !== storeSessionKey) {
+      return;
+    }
+
     const eventState = String(event.state || "");
     const runId = String(event.runId || "");
     const message = event.message as Record<string, unknown> | undefined;
