@@ -530,5 +530,8 @@
       "delete": "Delete",
       "deleting": "Deleting..."
     }
+  },
+  "about": {
+    "appName": "BUILDGEN Office"
   }
 }

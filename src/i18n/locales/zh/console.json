@@ -530,5 +530,8 @@
       "delete": "删除",
       "deleting": "删除中..."
     }
+  },
+  "about": {
+    "appName": "BUILDGEN Office"
   }
 }

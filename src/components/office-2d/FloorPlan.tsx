@@ -524,7 +524,7 @@ function LoungeDecor({ isDark }: { isDark: boolean }) {
         rx={1.5}
         fill={isDark ? "#64748b" : "#7a9bc0"}
       />
-      {/* "OpenClaw" logo text */}
+      {/* "BUILDGEN" logo text */}
       <text
         x={cx}
         y={bgWallY + bgWallH / 2 + 5}
@@ -535,7 +535,7 @@ function LoungeDecor({ isDark }: { isDark: boolean }) {
         fontFamily="system-ui, sans-serif"
         letterSpacing="0.12em"
       >
-        OpenClaw
+        BUILDGEN
       </text>
 
       {/* ── Reception desk (rounded front) ── */}
