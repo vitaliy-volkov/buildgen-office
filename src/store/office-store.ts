@@ -55,7 +55,18 @@ function displayAgentName(rawName: string | undefined, fallbackId: string): stri
   const n = (rawName || "").trim();
   const lower = n.toLowerCase();
 
-  if (lower === "main" || fallbackId === "main") return "Аркадий";
+  const byId: Record<string, string> = {
+    main: "Аркадий · Главный ИИ",
+    analyst: "Марина · Аналитик",
+    builder: "Илья · Техлид",
+    reviewer: "Анна · Ревьюер",
+    research: "Лев · Исследователь",
+    growth: "Ева · Маркетинг",
+    ops: "Макс · Операции",
+  };
+
+  if (byId[fallbackId]) return byId[fallbackId];
+  if (byId[lower]) return byId[lower];
   if (n.startsWith("Agent-")) return n.replace(/^Agent-/, "Агент-");
   if (n.startsWith("Sub-")) return n.replace(/^Sub-/, "Подагент-");
   if (!n) return `Агент-${fallbackId.slice(0, 6)}`;

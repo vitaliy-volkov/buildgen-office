@@ -624,7 +624,7 @@ function EntranceDoor({ isDark }: { isDark: boolean }) {
         fill={matColor}
         opacity={0.5}
       />
-      {/* "ENTRANCE" label outside */}
+      {/* "ВХОД" label outside */}
       <text
         x={doorCX}
         y={doorY + 14}
@@ -635,7 +635,7 @@ function EntranceDoor({ isDark }: { isDark: boolean }) {
         fontFamily="system-ui, sans-serif"
         letterSpacing="0.15em"
       >
-        ENTRANCE
+        ВХОД
       </text>
     </g>
   );
