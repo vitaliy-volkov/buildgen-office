@@ -250,6 +250,7 @@ export interface OfficeStore {
   lastSessionsSnapshot: SessionSnapshot | null;
   theme: ThemeMode;
   bloomEnabled: boolean;
+  showLoungePlaceholders: boolean;
   operatorScopes: string[];
   tokenHistory: TokenSnapshot[];
   agentCosts: Record<string, number>;
@@ -304,6 +305,7 @@ export interface OfficeStore {
   setSidebarCollapsed: (collapsed: boolean) => void;
   setTheme: (theme: ThemeMode) => void;
   setBloomEnabled: (enabled: boolean) => void;
+  setShowLoungePlaceholders: (enabled: boolean) => void;
 
   // 配置感知
   setMaxSubAgents: (n: number) => void;

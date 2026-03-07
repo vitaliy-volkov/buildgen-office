@@ -38,6 +38,7 @@ const EVENT_HISTORY_LIMIT = 200;
 const LINK_TIMEOUT_MS = 60_000;
 const THEME_STORAGE_KEY = "openclaw-theme";
 const CHAT_DOCK_HEIGHT_KEY = "openclaw-chat-dock-height";
+const SHOW_LOUNGE_PLACEHOLDERS_KEY = "openclaw-show-lounge-placeholders";
 const DEFAULT_CHAT_DOCK_HEIGHT = 300;
 const LOUNGE_TO_HOTDESK_DEBOUNCE_MS = 500;
 const HOTDESK_TO_LOUNGE_DELAY_MS = 30_000;
@@ -104,6 +105,14 @@ function getInitialBloom(): boolean {
     return true;
   }
   return window.devicePixelRatio >= 1.5;
+}
+
+function getInitialShowLoungePlaceholders(): boolean {
+  if (typeof window === "undefined") return true;
+  const stored = localStorage.getItem(SHOW_LOUNGE_PLACEHOLDERS_KEY);
+  if (stored === "true") return true;
+  if (stored === "false") return false;
+  return true;
 }
 
 function createVisualAgent(
@@ -250,6 +259,7 @@ export const useOfficeStore = create<OfficeStore>()(
     lastSessionsSnapshot: null,
     theme: getInitialTheme(),
     bloomEnabled: getInitialBloom(),
+    showLoungePlaceholders: getInitialShowLoungePlaceholders(),
     operatorScopes: [] as string[],
     tokenHistory: [] as TokenSnapshot[],
     agentCosts: {} as Record<string, number>,
@@ -857,6 +867,17 @@ export const useOfficeStore = create<OfficeStore>()(
       set((state) => {
         state.bloomEnabled = enabled;
       });
+    },
+
+    setShowLoungePlaceholders: (enabled: boolean) => {
+      set((state) => {
+        state.showLoungePlaceholders = enabled;
+      });
+      try {
+        localStorage.setItem(SHOW_LOUNGE_PLACEHOLDERS_KEY, String(enabled));
+      } catch {
+        // localStorage unavailable
+      }
     },
 
     setOperatorScopes: (scopes: string[]) => {

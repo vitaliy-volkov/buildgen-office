@@ -277,6 +277,11 @@
       "langEn": "English",
       "langRu": "Russian"
     },
+    "office": {
+      "title": "Office View",
+      "showLoungeSlots": "Show free sub-agent slots in lounge",
+      "showLoungeSlotsHint": "When disabled, placeholder avatars in the lounge are hidden"
+    },
     "providers": {
       "title": "AI Providers",
       "description": "Manage AI model provider configurations",

@@ -21,6 +21,7 @@ export function FloorPlan() {
   const agents = useOfficeStore((s) => s.agents);
   const links = useOfficeStore((s) => s.links);
   const theme = useOfficeStore((s) => s.theme);
+  const showLoungePlaceholders = useOfficeStore((s) => s.showLoungePlaceholders);
 
   const agentList = Array.from(agents.values());
   const isDark = theme === "dark";
@@ -35,8 +36,11 @@ export function FloorPlan() {
     [agentList],
   );
   const loungeAgents = useMemo(
-    () => agentList.filter((a) => a.zone === "lounge" && !a.movement),
-    [agentList],
+    () =>
+      agentList.filter(
+        (a) => a.zone === "lounge" && !a.movement && (showLoungePlaceholders || !a.isPlaceholder),
+      ),
+    [agentList, showLoungePlaceholders],
   );
   const meetingAgents = useMemo(
     () => agentList.filter((a) => a.zone === "meeting" && !a.movement),
@@ -227,6 +231,12 @@ export function FloorPlan() {
         .map((agent) => (
           <SpeechBubbleOverlay key={`bubble-${agent.id}`} agent={agent} />
         ))}
+
+      <div className="pointer-events-none absolute bottom-4 right-4 z-10 rounded-lg border border-slate-300/80 bg-white/90 px-3 py-2 text-xs text-slate-700 shadow-md backdrop-blur dark:border-slate-600/80 dark:bg-slate-900/85 dark:text-slate-200">
+        {showLoungePlaceholders
+          ? "Лаунж: серые аватары — свободные слоты саб-агентов"
+          : "Лаунж: свободные слоты скрыты (включаются в Settings)"}
+      </div>
     </div>
   );
 }

@@ -277,6 +277,11 @@
       "langEn": "英文",
       "langRu": "俄语"
     },
+    "office": {
+      "title": "办公室视图",
+      "showLoungeSlots": "显示休息区的子代理空闲槽位",
+      "showLoungeSlotsHint": "关闭后，休息区中的占位头像会隐藏"
+    },
     "providers": {
       "title": "AI 提供方",
       "description": "管理 AI 模型供应商配置",

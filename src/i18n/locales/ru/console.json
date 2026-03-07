@@ -277,6 +277,11 @@
       "langEn": "English",
       "langRu": "Русский"
     },
+    "office": {
+      "title": "Вид офиса",
+      "showLoungeSlots": "Показывать свободные слоты саб-агентов в лаунже",
+      "showLoungeSlotsHint": "Если выключить, серые placeholder-аватары в лаунже скрываются"
+    },
     "providers": {
       "title": "AI Providers",
       "description": "Manage AI model provider configurations",
