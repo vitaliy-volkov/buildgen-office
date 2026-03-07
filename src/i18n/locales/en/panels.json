@@ -10,6 +10,17 @@
       "trend": "Trend",
       "topology": "Topology",
       "activity": "Activity"
+    },
+    "topology": {
+      "demoMode": "Demo mode",
+      "forceDemo": "Force collaboration demo",
+      "clearDemo": "Clear demo",
+      "meetingReason": "Meeting triggered for {{count}} agent(s): strongest link {{sessionKey}} (strength {{strength}})",
+      "source": {
+        "live": "Source: Live",
+        "demo": "Source: Demo",
+        "noData": "Source: No data"
+      }
     }
   },
   "agentDetail": {

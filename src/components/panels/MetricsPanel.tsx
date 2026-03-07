@@ -29,6 +29,12 @@ export function MetricsPanel() {
   const { t } = useTranslation("panels");
   const [activeTab, setActiveTab] = useState<TabId>("overview");
   const metrics = useOfficeStore((s) => s.globalMetrics);
+  const links = useOfficeStore((s) => s.links);
+  const demoLinks = useOfficeStore((s) => s.demoLinks);
+  const demoTopologyEnabled = useOfficeStore((s) => s.demoTopologyEnabled);
+  const setDemoTopologyEnabled = useOfficeStore((s) => s.setDemoTopologyEnabled);
+  const forceCollaborationDemo = useOfficeStore((s) => s.forceCollaborationDemo);
+  const clearDemoTopology = useOfficeStore((s) => s.clearDemoTopology);
 
   const tabs: { id: TabId; label: string }[] = [
     { id: "overview", label: t("metrics.tabs.overview") },
@@ -36,6 +42,27 @@ export function MetricsPanel() {
     { id: "topology", label: t("metrics.tabs.topology") },
     { id: "activity", label: t("metrics.tabs.activity") },
   ];
+
+  const topologySource: "live" | "demo" | "noData" =
+    demoTopologyEnabled && demoLinks.length > 0
+      ? "demo"
+      : links.length > 0
+        ? "live"
+        : "noData";
+
+  const effectiveLinks = demoTopologyEnabled && demoLinks.length > 0 ? demoLinks : links;
+  const inMeetingCount = useOfficeStore(
+    (s) => Array.from(s.agents.values()).filter((a) => a.zone === "meeting" && a.confirmed).length,
+  );
+  const topLink = [...effectiveLinks].sort((a, b) => b.strength - a.strength)[0];
+  const meetingReason =
+    inMeetingCount > 0 && topLink
+      ? t("metrics.topology.meetingReason", {
+          count: inMeetingCount,
+          sessionKey: topLink.sessionKey,
+          strength: topLink.strength.toFixed(2),
+        })
+      : null;
 
   const cards = [
     {
@@ -103,9 +130,56 @@ export function MetricsPanel() {
           </Suspense>
         )}
         {activeTab === "topology" && (
-          <Suspense fallback={<TabSpinner />}>
-            <NetworkGraph />
-          </Suspense>
+          <>
+            <div className="mb-2 flex flex-wrap items-center gap-1.5">
+              <span
+                className={`rounded-full px-2 py-0.5 text-[10px] font-medium ${
+                  topologySource === "demo"
+                    ? "bg-purple-100 text-purple-700 dark:bg-purple-900/40 dark:text-purple-300"
+                    : topologySource === "live"
+                      ? "bg-green-100 text-green-700 dark:bg-green-900/40 dark:text-green-300"
+                      : "bg-gray-100 text-gray-600 dark:bg-gray-800 dark:text-gray-300"
+                }`}
+              >
+                {t(`metrics.topology.source.${topologySource}`)}
+              </span>
+              <button
+                type="button"
+                onClick={() => setDemoTopologyEnabled(!demoTopologyEnabled)}
+                className={`rounded px-2 py-0.5 text-[10px] font-medium ${
+                  demoTopologyEnabled
+                    ? "bg-blue-100 text-blue-700 dark:bg-blue-900/40 dark:text-blue-300"
+                    : "bg-gray-100 text-gray-600 dark:bg-gray-800 dark:text-gray-300"
+                }`}
+              >
+                {t("metrics.topology.demoMode")}
+              </button>
+              <button
+                type="button"
+                onClick={forceCollaborationDemo}
+                className="rounded bg-purple-600 px-2 py-0.5 text-[10px] font-medium text-white hover:bg-purple-700"
+              >
+                {t("metrics.topology.forceDemo")}
+              </button>
+              {demoLinks.length > 0 && (
+                <button
+                  type="button"
+                  onClick={clearDemoTopology}
+                  className="rounded bg-gray-100 px-2 py-0.5 text-[10px] text-gray-600 hover:bg-gray-200 dark:bg-gray-800 dark:text-gray-300 dark:hover:bg-gray-700"
+                >
+                  {t("metrics.topology.clearDemo")}
+                </button>
+              )}
+            </div>
+            {meetingReason && (
+              <div className="mb-2 rounded border border-amber-200 bg-amber-50 px-2 py-1 text-[10px] text-amber-800 dark:border-amber-800/60 dark:bg-amber-900/20 dark:text-amber-300">
+                {meetingReason}
+              </div>
+            )}
+            <Suspense fallback={<TabSpinner />}>
+              <NetworkGraph />
+            </Suspense>
+          </>
         )}
         {activeTab === "activity" && (
           <Suspense fallback={<TabSpinner />}>
